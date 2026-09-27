@@ -1,0 +1,305 @@
+name: Build Android APK (ARMeabiv7)
+
+on:
+  push:
+    branches:
+      - "main"
+      - "release/*"
+    paths:
+      - ".github/workflows/android_apk_armeabiv7.yml"
+      - "frontend/**"
+
+  pull_request:
+    branches:
+      - "main"
+      - "release/*"
+    paths:
+      - ".github/workflows/android_apk_armeabiv7.yml"
+      - "frontend/**"
+      - "!frontend/appflowy_tauri/**"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write # needed by softprops/action-gh-release to publish releases
+
+env:
+  CARGO_TERM_COLOR: always
+  FLUTTER_VERSION: "3.27.4"
+  RUST_TOOLCHAIN: "1.85.0"
+  CARGO_MAKE_VERSION: "0.37.18"
+  CARGO_NDK_VERSION: "3.5.4"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_apk_armeabiv7:
+    if: github.event.pull_request.draft != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Check storage space
+        run: df -h
+
+      - name: Maximize build space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo docker image prune --all --force
+          sudo rm -rf /opt/hostedtoolcache/codeQL
+
+      - name: Checkout source code
+        uses: actions/checkout@v5
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # actions-rs/toolchain is archived/unmaintained; dtolnay/rust-toolchain
+      # is the standard replacement and also lets us install the Android
+      # targets in the same step instead of three separate `rustup target
+      # install` calls later on.
+      - name: Install Rust toolchain
+        id: rust_toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          targets: armv7-linux-androideabi,aarch64-linux-android,x86_64-linux-android
+
+      - name: Install Flutter
+        id: flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      # gradle/gradle-build-action was archived Feb 2025; gradle/actions/setup-gradle
+      # is its official, functionally-identical successor.
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10
+
+      - name: Install cargo-make
+        uses: davidB/rust-cargo-make@v1
+        with:
+          version: ${{ env.CARGO_MAKE_VERSION }}
+
+      - name: Install Android NDK and build tools
+        working-directory: frontend
+        run: |
+          set -euo pipefail
+          # Re-added explicitly, scoped to this directory. dtolnay/rust-toolchain's
+          # `targets:` input (see the earlier step) attaches the Android targets to
+          # whatever toolchain it installs at the repo root — but if anything under
+          # frontend/ (e.g. a rust-toolchain.toml) makes rustup resolve a *different*
+          # toolchain once cargo actually runs from here, that toolchain gets
+          # auto-installed on the fly with NO extra targets, and the build fails with
+          # "can't find crate for `core`" for aarch64-linux-android. Running this here
+          # guarantees the targets are attached to whatever toolchain actually gets
+          # used for the build, matching how the original (working) workflow did it.
+          rustup target add armv7-linux-androideabi aarch64-linux-android x86_64-linux-android
+          cargo install --force --locked duckscript_cli
+          # cargo-ndk 4.x requires Rust >= 1.86 and introduced breaking
+          # changes, so we pin to the compatible 3.x line. (Only installed
+          # once now — the previous duplicate install with/without --locked
+          # was wasted build time.)
+          cargo install --force --version "${{ env.CARGO_NDK_VERSION }}" --locked cargo-ndk
+          sudo apt-get update
+          sudo apt-get install -y \
+            curl \
+            build-essential \
+            libssl-dev \
+            clang \
+            cmake \
+            ninja-build \
+            pkg-config \
+            libgtk-3-dev \
+            keybinder-3.0 \
+            libnotify-dev \
+            gcc-multilib
+          cargo make appflowy-flutter-deps-tools
+          echo "Rust:"
+          rustc --version
+          echo "Cargo:"
+          cargo --version
+          echo "cargo-ndk:"
+          cargo ndk --version
+        shell: bash
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            frontend/rust-lib
+          cache-all-crates: true
+
+      # ──────────────────────────────────────────────────────────────────────
+      # PATCH: disable AppFlowy's hardcoded arm64-v8a abiFilters.
+      #
+      # AppFlowy's android/app/build.gradle contains:
+      #
+      #     // only support arm64-v8a
+      #     defaultConfig {
+      #         ndk {
+      #             abiFilters "arm64-v8a"
+      #         }
+      #     }
+      #
+      # When --split-per-abi is passed to `flutter build apk`, Flutter's
+      # gradle plugin activates `splits { abi { ... } }`. Gradle FORBIDS
+      # having both `ndk.abiFilters` AND `splits.abi` filters set, and
+      # fails with:
+      #
+      #     Conflicting configuration : 'arm64-v8a' in ndk abiFilters
+      #     cannot be present when splits abi filters are set : armeabi-v7a
+      #
+      # We comment out the abiFilters line in-place so --split-per-abi is
+      # free to drive ABI selection. The patch is idempotent — re-running
+      # it on an already-patched file is a no-op.
+      # ──────────────────────────────────────────────────────────────────────
+      - name: Patch build.gradle (remove hardcoded arm64-v8a abiFilters)
+        working-directory: frontend/appflowy_flutter/android/app
+        run: |
+          set -euo pipefail
+          echo "==== build.gradle: abiFilters lines BEFORE patch ===="
+          grep -n "abiFilters" build.gradle || echo "(none found)"
+
+          # Idempotent: only replace lines that still have the uncommented form.
+          sed -i \
+            's|^\(\s*\)abiFilters "arm64-v8a"|\1// abiFilters "arm64-v8a"  # disabled by CI for --split-per-abi build|' \
+            build.gradle
+
+          echo "==== build.gradle: abiFilters lines AFTER patch ===="
+          grep -n "abiFilters" build.gradle || echo "(none remaining)"
+
+          if grep -qE '^\s*abiFilters\s+"arm64-v8a"' build.gradle; then
+            echo "ERROR: patch did not apply — uncommented abiFilters line still present."
+            exit 1
+          fi
+        shell: bash
+
+      - name: Build Rust core for ARMeabiv7
+        working-directory: frontend
+        run: |
+          set -euo pipefail
+          echo "Building Rust backend for arm64-v8a AND armeabi-v7a..."
+          # ──────────────────────────────────────────────────────────────────
+          # CRITICAL: use `appflowy-core-dev-android-ci`, NOT
+          # `appflowy-core-dev-android`.
+          #
+          # The default `appflowy-core-dev-android` task runs:
+          #     cargo ndk -t arm64-v8a -o ./jniLibs build ...
+          # i.e. it ONLY produces libdart_ffi.so for arm64-v8a. If we used
+          # it here, the subsequent `flutter build apk --target-platform
+          # android-arm --split-per-abi` would happily produce an
+          # armeabi-v7a APK with NO native library inside, and the APK
+          # would install on the Redmi 9A but crash on launch with
+          # `UnsatisfiedLinkError`.
+          #
+          # The `-ci` variant (defined in
+          # frontend/scripts/makefile/mobile.toml) runs:
+          #     cargo ndk -t arm64-v8a -t armeabi-v7a -o ./jniLibs build ...
+          # and `post-mobile-android` then copies BOTH ABIs into
+          # android/app/src/main/jniLibs/, so the armeabi-v7a split APK
+          # actually contains a libdart_ffi.so it can load.
+          #
+          # Trade-off: the -ci task is hardcoded to a DEBUG build (no
+          # --release branch). The resulting APK will be larger (~100 MB+)
+          # and slower than a release build, but works fine for testing
+          # on a real device. To get a release armeabi-v7a build you'd
+          # have to either patch mobile.toml or run `cargo ndk -t
+          # armeabi-v7a --release ...` directly.
+          # ──────────────────────────────────────────────────────────────
+          cargo make --profile development-android appflowy-core-dev-android-ci
+          cargo make --profile development-android code_generation
+
+          # Sanity check: confirm BOTH .so files exist in jniLibs before
+          # `cargo clean` wipes the build artifacts. The .so files have
+          # already been copied to android/app/src/main/jniLibs/ by
+          # post-mobile-android, so cleaning target/ is safe — but verify
+          # first so we fail loudly here instead of producing a broken APK.
+          echo "==== libdart_ffi.so files in jniLibs ===="
+          find rust-lib/jniLibs -name "libdart_ffi.so" -exec ls -lh {} \;
+          for abi in arm64-v8a armeabi-v7a; do
+            if [ ! -f "rust-lib/jniLibs/${abi}/libdart_ffi.so" ]; then
+              echo "ERROR: libdart_ffi.so for ${abi} is missing from jniLibs."
+              echo "The Rust build did not produce the expected native libraries."
+              exit 1
+            fi
+          done
+
+          cd rust-lib
+          cargo clean
+        shell: bash
+
+      - name: Build Flutter dependencies
+        working-directory: frontend
+        run: |
+          set -euo pipefail
+          echo "Getting Flutter dependencies..."
+          cargo make pub_get
+        shell: bash
+
+      - name: Build APK for ARMeabiv7
+        working-directory: frontend/appflowy_flutter
+        run: |
+          set -euo pipefail
+          echo "Building APK for ARMeabiv7 architecture..."
+          flutter build apk \
+            --target-platform android-arm \
+            --release \
+            --split-per-abi
+        shell: bash
+
+      - name: Rename APK
+        working-directory: frontend/appflowy_flutter/build/app/outputs/flutter-apk
+        run: |
+          set -euo pipefail
+          if [ -f "app-armeabi-v7a-release.apk" ]; then
+            mv app-armeabi-v7a-release.apk \
+              appflowy-armeabiv7-${{ github.sha }}.apk
+            ls -lh appflowy-armeabiv7-${{ github.sha }}.apk
+          else
+            echo "APK file not found!"
+            ls -la
+            exit 1
+          fi
+        shell: bash
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: appflowy-apk-armeabiv7-${{ github.run_id }}
+          path: frontend/appflowy_flutter/build/app/outputs/flutter-apk/appflowy-armeabiv7-*.apk
+          retention-days: 30
+
+      - name: Generate release notes
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          echo "## ARMeabiv7 APK Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Date:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Architecture:** ARMeabiv7 (32-bit ARM)" >> $GITHUB_STEP_SUMMARY
+          echo "**Flutter Version:** ${{ env.FLUTTER_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Rust Toolchain:** ${{ env.RUST_TOOLCHAIN }}" >> $GITHUB_STEP_SUMMARY
+          echo "**cargo-ndk Version:** ${{ env.CARGO_NDK_VERSION }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: frontend/appflowy_flutter/build/app/outputs/flutter-apk/appflowy-armeabiv7-*.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
