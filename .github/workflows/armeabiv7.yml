@@ -1,0 +1,174 @@
+name: Build Android APK (ARMeabiv7)
+
+on:
+  push:
+    branches:
+      - "main"
+      - "release/*"
+    paths:
+      - ".github/workflows/android_apk_armeabiv7.yml"
+      - "frontend/**"
+
+  pull_request:
+    branches:
+      - "main"
+      - "release/*"
+    paths:
+      - ".github/workflows/android_apk_armeabiv7.yml"
+      - "frontend/**"
+      - "!frontend/appflowy_tauri/**"
+
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  FLUTTER_VERSION: "3.27.4"
+  RUST_TOOLCHAIN: "1.85.0"
+  CARGO_MAKE_VERSION: "0.37.18"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_apk_armeabiv7:
+    if: github.event.pull_request.draft != true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check storage space
+        run: df -h
+
+      - name: Maximize build space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          sudo docker image prune --all --force
+          sudo rm -rf /opt/hostedtoolcache/codeQL
+
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Install Rust toolchain
+        id: rust_toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          override: true
+          profile: minimal
+
+      - name: Install Flutter
+        id: flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: 8.10
+
+      - name: Install cargo-make
+        uses: davidB/rust-cargo-make@v1
+        with:
+          version: ${{ env.CARGO_MAKE_VERSION }}
+
+      - name: Install Android NDK and build tools
+        working-directory: frontend
+        run: |
+          rustup target install armv7-linux-androideabi
+          rustup target install aarch64-linux-android
+          rustup target install x86_64-linux-android
+          cargo install --force --locked duckscript_cli
+          cargo install cargo-ndk
+          sudo wget -qO /etc/apt/trusted.gpg.d/dart_linux_signing_key.asc https://dl-ssl.google.com/linux/linux_signing_key.pub
+          sudo wget -qO /etc/apt/sources.list.d/dart_stable.list https://storage.googleapis.com/download.dartlang.org/linux/debian/dart_stable.list
+          sudo apt-get update
+          sudo apt-get install -y dart curl build-essential libssl-dev clang cmake ninja-build pkg-config libgtk-3-dev keybinder-3.0 libnotify-dev gcc-multilib
+          cargo make appflowy-flutter-deps-tools
+        shell: bash
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            frontend/rust-lib
+          cache-all-crates: true
+
+      - name: Build Rust core for ARMeabiv7
+        working-directory: frontend
+        run: |
+          echo "Building Rust backend for ARMeabiv7..."
+          cargo make --profile development-android appflowy-core-dev-android
+          cargo make --profile development-android code_generation
+          cd rust-lib
+          cargo clean
+        shell: bash
+
+      - name: Build Flutter dependencies
+        working-directory: frontend
+        run: |
+          echo "Getting Flutter dependencies..."
+          cargo make pub_get
+        shell: bash
+
+      - name: Build APK for ARMeabiv7
+        working-directory: frontend/appflowy_flutter
+        run: |
+          echo "Building APK for ARMeabiv7 architecture..."
+          flutter build apk \
+            --target-platform android-arm \
+            --release \
+            --split-per-abi
+        shell: bash
+
+      - name: Rename APK
+        working-directory: frontend/appflowy_flutter/build/app/outputs/flutter-apk
+        run: |
+          if [ -f "app-armeabi-v7a-release.apk" ]; then
+            mv app-armeabi-v7a-release.apk appflowy-armeabiv7-${{ github.sha }}.apk
+            ls -lh appflowy-armeabiv7-${{ github.sha }}.apk
+          else
+            echo "APK file not found!"
+            ls -la
+            exit 1
+          fi
+        shell: bash
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: appflowy-apk-armeabiv7-${{ github.run_id }}
+          path: frontend/appflowy_flutter/build/app/outputs/flutter-apk/appflowy-armeabiv7-*.apk
+          retention-days: 30
+
+      - name: Generate release notes
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          echo "## ARMeabiv7 APK Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Date:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Architecture:** ARMeabiv7 (32-bit ARM)" >> $GITHUB_STEP_SUMMARY
+          echo "**Flutter Version:** ${{ env.FLUTTER_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Rust Toolchain:** ${{ env.RUST_TOOLCHAIN }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: frontend/appflowy_flutter/build/app/outputs/flutter-apk/appflowy-armeabiv7-*.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
