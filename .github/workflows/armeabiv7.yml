@@ -25,7 +25,7 @@ env:
   FLUTTER_VERSION: "3.27.4"
   RUST_TOOLCHAIN: "1.85.0"
   CARGO_MAKE_VERSION: "0.37.18"
-  CARGO_NDK_VERSION: "3.5.7"
+  CARGO_NDK_VERSION: "3.5.4"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -92,6 +92,7 @@ jobs:
           rustup target install x86_64-linux-android
 
           cargo install --force --locked duckscript_cli
+          cargo install --force --version "${{ env.CARGO_NDK_VERSION }}" --locked cargo-ndk
 
           # cargo-ndk 4.x requires Rust >= 1.86 and also introduced
           # breaking changes. Keep the workflow on the compatible 3.x line.
