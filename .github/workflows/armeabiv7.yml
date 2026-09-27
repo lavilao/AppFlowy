@@ -60,7 +60,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 17
 
       # actions-rs/toolchain is archived/unmaintained; dtolnay/rust-toolchain
       # is the standard replacement and also lets us install the Android
