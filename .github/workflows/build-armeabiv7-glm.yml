@@ -38,7 +38,9 @@ jobs:
   build_apk_armeabiv7:
     if: github.event.pull_request.draft != true
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # Release Rust build (O2) takes longer than the previous debug build on a
+    # cold cache; 150 min leaves headroom for both codegen and the APK build.
+    timeout-minutes: 150
 
     steps:
       - name: Check storage space
@@ -191,7 +193,7 @@ jobs:
         working-directory: frontend
         run: |
           set -euo pipefail
-          echo "Building Rust backend for arm64-v8a AND armeabi-v7a..."
+          echo "Building Rust backend for armeabi-v7a (RELEASE)..."
           # ──────────────────────────────────────────────────────────────────
           # CRITICAL: use `appflowy-core-dev-android-ci`, NOT
           # `appflowy-core-dev-android`.
@@ -205,34 +207,56 @@ jobs:
           # would install on the Redmi 9A but crash on launch with
           # `UnsatisfiedLinkError`.
           #
-          # The `-ci` variant (defined in
-          # frontend/scripts/makefile/mobile.toml) runs:
-          #     cargo ndk -t arm64-v8a -t armeabi-v7a -o ./jniLibs build ...
-          # and `post-mobile-android` then copies BOTH ABIs into
-          # android/app/src/main/jniLibs/, so the armeabi-v7a split APK
-          # actually contains a libdart_ffi.so it can load.
+          # FIX for the black/transparent screen on Redmi 9A (and any
+          # low-end 32-bit device):
           #
-          # Trade-off: the -ci task is hardcoded to a DEBUG build (no
-          # --release branch). The resulting APK will be larger (~100 MB+)
-          # and slower than a release build, but works fine for testing
-          # on a real device. To get a release armeabi-v7a build you'd
-          # have to either patch mobile.toml or run `cargo ndk -t
-          # armeabi-v7a --release ...` directly.
-          # ──────────────────────────────────────────────────────────────
-          cargo make --profile development-android appflowy-core-dev-android-ci
+          # The stock `sdk-build-android-ci` task is hardcoded to a DEBUG
+          # Rust build. A debug libdart_ffi.so is unstripped (hundreds of
+          # MB, millions of relocations) and AppFlowy's Rust backend init
+          # (storage + migrations + tokio runtime) runs at -O0. On a
+          # Helio G25 / 2 GB RAM device the InitRustSDKTask hangs or gets
+          # OOM-killed. Because AppFlowy only calls runApp() AFTER the
+          # Rust SDK init task completes (see lib/startup/startup.dart:
+          # InitAppWidgetTask runs after InitRustSDKTask), the Flutter UI
+          # never paints a single frame → permanent black/transparent
+          # screen.
+          #
+          # We therefore build the Rust core in RELEASE for armeabi-v7a:
+          #   1. `--profile production-android` sets BUILD_FLAG=release.
+          #   2. The (patched in this fork) `sdk-build-android-ci` task
+          #      honors BUILD_FLAG and adds `--release` + `-t armeabi-v7a`.
+          #   3. production-android does NOT define FLUTTER_DESKTOP_FEATURES,
+          #      so we pass it explicitly with --env (same value as the
+          #      development-android profile uses: "dart,openssl_vendored").
+          # Only armeabi-v7a is needed: the APK is built with
+          # `--target-platform android-arm --split-per-abi`, so an arm64
+          # libdart_ffi.so would be dead weight in the v7a split APK and
+          # doubles the build time for nothing.
+          # ──────────────────────────────────────────────────────────────────
+          export FLUTTER_DESKTOP_FEATURES="dart,openssl_vendored"
+          cargo make \
+            --profile production-android \
+            --env FLUTTER_DESKTOP_FEATURES="dart,openssl_vendored" \
+            appflowy-core-dev-android-ci
+          # Codegen output is build-profile independent; keep the dev
+          # profile here so this step stays byte-identical to upstream.
           cargo make --profile development-android code_generation
 
-          # Sanity check: confirm BOTH .so files exist in jniLibs before
-          # `cargo clean` wipes the build artifacts. The .so files have
-          # already been copied to android/app/src/main/jniLibs/ by
+          # Sanity check: confirm the armeabi-v7a .so exists in jniLibs
+          # before `cargo clean` wipes the build artifacts. The .so file
+          # has already been copied to android/app/src/main/jniLibs/ by
           # post-mobile-android, so cleaning target/ is safe — but verify
           # first so we fail loudly here instead of producing a broken APK.
           echo "==== libdart_ffi.so files in jniLibs ===="
           find rust-lib/jniLibs -name "libdart_ffi.so" -exec ls -lh {} \;
-          for abi in arm64-v8a armeabi-v7a; do
+          for abi in armeabi-v7a; do
             if [ ! -f "rust-lib/jniLibs/${abi}/libdart_ffi.so" ]; then
               echo "ERROR: libdart_ffi.so for ${abi} is missing from jniLibs."
               echo "The Rust build did not produce the expected native libraries."
+              exit 1
+            fi
+            if [ ! -f "appflowy_flutter/android/app/src/main/jniLibs/${abi}/libdart_ffi.so" ]; then
+              echo "ERROR: libdart_ffi.so for ${abi} was not copied into the android project."
               exit 1
             fi
           done
