@@ -33,7 +33,20 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     compileSdkVersion 35
-    ndkVersion "24.0.8215888"
+    // MUST be the same NDK that builds libdart_ffi.so (the Rust backend, built
+    // by cargo-ndk with the NDK pinned in the CI workflow). libdart_ffi.so
+    // links libc++_shared.so dynamically against that NDK's C++ runtime, and
+    // src/main/CMakeLists.txt copies libc++_shared.so into the APK from THIS
+    // ndkVersion — it also overwrites the r27d copy that cargo-ndk drops into
+    // jniLibs. If the two drift apart (e.g. an r24 runtime packaged next to an
+    // r27d-linked libdart_ffi.so), dlopen fails on launch with:
+    //   dlopen failed: cannot locate symbol
+    //   "_ZTTNSt6__ndk118basic_stringstreamIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
+    // (17 missing __ndk1 symbols: stringstream/stringbuf/filebuf vtables &
+    // VTTs) → "Failed to load dynamic library 'libdart_ffi.so'" before the
+    // first Flutter frame, i.e. the black-screen crash on 32-bit devices.
+    // r27d == 27.3.13750724 (https://github.com/android/ndk/releases/tag/r27d).
+    ndkVersion "27.3.13750724"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -47,6 +60,18 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
         main.jniLibs.srcDirs += 'jniLibs/'
+    }
+
+    // libdart_ffi.so, the CMake external build and the Flutter engine can all
+    // bring their own libc++_shared.so. Never fail the merge on duplicates;
+    // the post-build sanity check
+    // (frontend/scripts/check_apk_libcxx_symbols.sh) verifies that the copy
+    // that survives is the NDK r27d runtime that libdart_ffi.so was linked
+    // against.
+    packagingOptions {
+        jniLibs {
+            pickFirsts += ['**/libc++_shared.so']
+        }
     }
 
     defaultConfig {
@@ -74,9 +99,12 @@ android {
     }
     buildTypes {
         release {
-            // use release instead when publishing the application to google play.
-            // signingConfig signingConfigs.release
-            signingConfig signingConfigs.debug
+            // Sign with the stable committed keystore (android/key.properties
+            // + android/app/appflowy-upload.jks) so every CI release carries
+            // the SAME signature and updates install over previous releases
+            // without losing user data. Fall back to the ephemeral debug
+            // keystore when key.properties is absent (fresh local checkouts).
+            signingConfig keystorePropertiesFile.exists() ? signingConfigs.release : signingConfigs.debug
         }
     }
 
@@ -88,10 +116,15 @@ android {
         }
     }
 
-    // only support arm64-v8a
     defaultConfig {
         ndk {
-            abiFilters "arm64-v8a"
+            // Upstream pinned "arm64-v8a" here, but ndk.abiFilters CONFLICTS
+            // with splits.abi once --split-per-abi is used ("Conflicting
+            // configuration: 'arm64-v8a' in ndk abiFilters cannot be present
+            // when splits abi filters are set: armeabi-v7a"). The armeabi-v7a
+            // fork drives ABI selection through splits instead — do not
+            // re-enable without dropping --split-per-abi.
+            // abiFilters "arm64-v8a"
         }
     }
 }

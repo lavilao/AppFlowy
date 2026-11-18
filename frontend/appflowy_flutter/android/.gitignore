@@ -12,4 +12,11 @@ key.properties
 **/*.keystore
 **/*.jks
 
+# EXCEPTION (personal fork): the STABLE release keystore IS committed on
+# purpose (key.properties + app/appflowy-upload.jks) so every CI release is
+# signed with the same key and updates install over previous releases
+# without losing user data. Do NOT use this keystore for Play Store builds.
+!key.properties
+!app/appflowy-upload.jks
+
 .cxx
