@@ -4,6 +4,7 @@ use allo_isolate::Isolate;
 use futures::ready;
 use lazy_static::lazy_static;
 use semver::Version;
+use std::convert::TryFrom;
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::{Arc, Once, RwLock};
@@ -246,8 +247,19 @@ pub extern "C" fn init_sdk(_port: i64, data: *mut c_char) -> i64 {
 
 #[no_mangle]
 #[allow(clippy::let_underscore_future)]
-pub extern "C" fn async_event(port: i64, input: *const u8, len: usize) {
+pub extern "C" fn async_event(port: i64, input: *const u8, len: u64) {
   install_panic_logger();
+  // The Dart binding (appflowy_backend/lib/ffi.dart) declares `len` as `Uint64`.
+  // On 32-bit targets (armeabi-v7a) `usize` is only 32 bits wide, so the old
+  // `len: usize` signature read the argument from the wrong register in the
+  // ARM calling convention: Dart passed the 64-bit length on the stack while
+  // Rust read a garbage value from r3. The garbage length then made
+  // `slice::from_raw_parts(..).to_vec()` panic with "capacity overflow" in
+  // alloc/src/slice.rs, and because the panic unwinds out of an `extern "C"`
+  // function the runtime aborted (SIGABRT). Keep the parameter 64-bit wide so
+  // it matches the Dart caller on every ABI; on 64-bit targets `u64` and
+  // `usize` are ABI-identical, so nothing changes there.
+  let len = usize::try_from(len).unwrap_or(0);
   let request: AFPluginRequest = FFIRequest::from_u8_pointer(input, len).into();
   #[cfg(feature = "verbose_log")]
   trace!(
@@ -303,8 +315,10 @@ impl Future for Runner {
 }
 
 #[no_mangle]
-pub extern "C" fn sync_event(_input: *const u8, _len: usize) -> *const u8 {
+pub extern "C" fn sync_event(_input: *const u8, _len: u64) -> *const u8 {
   install_panic_logger();
+  // `_len` is `u64` to match the `Uint64` declared in the Dart binding; see
+  // the comment on `async_event` for why a `usize` here breaks armeabi-v7a.
   error!("unimplemented sync_event");
 
   let response_bytes = vec![];
