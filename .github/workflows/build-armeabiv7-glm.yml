@@ -135,17 +135,48 @@ jobs:
       - name: Install pinned Android NDK r27d (27.3.13750724)
         run: |
           set -euo pipefail
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          yes | sdkmanager "ndk;${{ env.NDK_VERSION }}" > /dev/null
-          NDK_DIR="$ANDROID_HOME/ndk/${{ env.NDK_VERSION }}"
+          NDK_VERSION="${{ env.NDK_VERSION }}"
+          NDK_DIR="$ANDROID_HOME/ndk/$NDK_VERSION"
+          mkdir -p "$ANDROID_HOME/ndk"
+
+          install_via_sdkmanager() {
+            local SDKM=""
+            if [ -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" ]; then
+              SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+            elif command -v sdkmanager > /dev/null 2>&1; then
+              SDKM="$(command -v sdkmanager)"
+            else
+              echo "sdkmanager not on PATH and no cmdline-tools installed"
+              return 1
+            fi
+            echo "Using sdkmanager: $SDKM"
+            yes | "$SDKM" --licenses > /dev/null 2>&1 || true
+            yes | "$SDKM" "ndk;$NDK_VERSION" > /dev/null || return 1
+          }
+
+          install_via_direct_download() {
+            echo "Installing NDK $NDK_VERSION from the official zip (dl.google.com)..."
+            curl -sSL --retry 3 -o /tmp/android-ndk-linux.zip \
+              "https://dl.google.com/android/repository/android-ndk-r27d-linux.zip"
+            rm -rf /tmp/ndk-extract "$NDK_DIR"
+            unzip -q /tmp/android-ndk-linux.zip -d /tmp/ndk-extract
+            mv /tmp/ndk-extract/android-ndk-r27d "$NDK_DIR"
+            rm -rf /tmp/ndk-extract /tmp/android-ndk-linux.zip
+          }
+
+          if ! install_via_sdkmanager; then
+            echo "sdkmanager unavailable/failed — falling back to direct download"
+            install_via_direct_download
+          fi
+
           if [ ! -f "$NDK_DIR/source.properties" ]; then
-            echo "ERROR: NDK r27d install failed — $NDK_DIR/source.properties missing"
+            echo "ERROR: NDK $NDK_VERSION install failed — $NDK_DIR/source.properties missing"
             ls "$ANDROID_HOME/ndk" || true
             exit 1
           fi
           echo "ANDROID_NDK_HOME=$NDK_DIR" >> "$GITHUB_ENV"
           echo "NDK_HOME=$NDK_DIR" >> "$GITHUB_ENV"
-          echo "NDK r27d installed at: $NDK_DIR"
+          echo "NDK $NDK_VERSION installed at: $NDK_DIR"
           grep -E "Pkg\.Revision|Pkg\.Desc" "$NDK_DIR/source.properties"
         shell: bash
 
