@@ -125,7 +125,17 @@ impl AppFlowyCore {
     config.ensure_path();
 
     // Init the key value database
-    let store_preference = Arc::new(KVStorePreferences::new(&config.storage_path).unwrap());
+    // Panic (instead of a bare unwrap) with the storage path and the
+    // underlying error: on Android this is the classic invisible SIGABRT —
+    // the panic hook in dart-ffi forwards it to logcat (tag "RustPanic").
+    let store_preference = Arc::new(
+      KVStorePreferences::new(&config.storage_path).unwrap_or_else(|err| {
+        panic!(
+          "Failed to init KVStorePreferences at storage_path {}: {:?}",
+          config.storage_path, err
+        )
+      }),
+    );
     info!("🔥{:?}", &config);
 
     #[cfg(any(target_os = "windows", target_os = "macos", target_os = "linux"))]

@@ -23,7 +23,16 @@ pub struct AppFlowyDartConfiguration {
 
 impl AppFlowyDartConfiguration {
   pub fn from_str(s: &str) -> Self {
-    serde_json::from_str::<AppFlowyDartConfiguration>(s).unwrap()
+    // Panic instead of silently returning a broken config, but keep the
+    // parse error AND the offending payload in the message: on Android this
+    // lands in logcat via the panic hook (tag "RustPanic", dart-ffi lib.rs)
+    // instead of being lost to /dev/null stderr.
+    serde_json::from_str::<AppFlowyDartConfiguration>(s).unwrap_or_else(|err| {
+      panic!(
+        "Failed to parse AppFlowyDartConfiguration: {} — payload: {}",
+        err, s
+      )
+    })
   }
 
   pub fn write_env(&self) {

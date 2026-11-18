@@ -6,7 +6,7 @@ use lazy_static::lazy_static;
 use semver::Version;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::{Arc, RwLock};
+use std::sync::{Arc, Once, RwLock};
 use std::task::{Context, Poll};
 use std::{ffi::CStr, os::raw::c_char};
 use tokio::sync::mpsc;
@@ -36,6 +36,79 @@ mod env_serde;
 mod model;
 mod notification;
 mod protobuf;
+
+// ---------------------------------------------------------------------------
+// Panic visibility (Android). A Rust panic inside these extern "C" entry
+// points aborts the process — SIGABRT, reported by `dumpsys activity
+// exit-info` as reason=5 (APP CRASH(NATIVE)) status=6 — but the default panic
+// hook only prints to stderr, and a release Android build sends stderr to
+// /dev/null. The result is a native crash with NOTHING in logcat (the Redmi
+// 9A startup crash observed after the libc++_shared.so dlopen fix: dlopen
+// succeeds, then the process dies with status=6 and no output at all).
+//
+// This hook mirrors every panic into the Android logcat under the tag
+// "RustPanic" (via liblog's __android_log_print, linked by build.rs) and to
+// stderr elsewhere, so the exact panic location and message become visible:
+//   adb logcat -s RustPanic
+// It is installed from every FFI entry point (Once-guarded, so the earliest
+// call — set_stream_port, before init_sdk — wins).
+// ---------------------------------------------------------------------------
+static INSTALL_PANIC_HOOK: Once = Once::new();
+
+pub fn install_panic_logger() {
+  INSTALL_PANIC_HOOK.call_once(|| {
+    let default_hook = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |info| {
+      let location = info
+        .location()
+        .map(|l| format!("{}:{}:{}", l.file(), l.line(), l.column()))
+        .unwrap_or_else(|| "<unknown>".to_string());
+      let payload = if let Some(s) = info.payload().downcast_ref::<&str>() {
+        (*s).to_string()
+      } else if let Some(s) = info.payload().downcast_ref::<String>() {
+        s.clone()
+      } else {
+        "<non-string panic payload>".to_string()
+      };
+      let msg = format!("AppFlowy Rust panic at {} — {}", location, payload);
+      eprintln!("{}", msg);
+      #[cfg(target_os = "android")]
+      log_panic_to_logcat(&msg);
+      default_hook(info);
+    }));
+  });
+}
+
+#[cfg(target_os = "android")]
+fn log_panic_to_logcat(msg: &str) {
+  use std::ffi::CString;
+
+  // liblog.so is a public Android library (/system/public.libraries.txt) and
+  // is linked for android targets by build.rs (`cargo:rustc-link-lib=dylib=log`).
+  extern "C" {
+    fn __android_log_print(prio: i32, tag: *const c_char, fmt: *const c_char, ...) -> i32;
+  }
+
+  // logcat truncates a single entry at ~4068 bytes; clamp to a UTF-8 boundary
+  // so CString::new never fails on a cut multi-byte character.
+  let mut end = msg.len().min(3500);
+  while end > 0 && !msg.is_char_boundary(end) {
+    end -= 1;
+  }
+  let text = match CString::new(&msg[..end]) {
+    Ok(text) => text,
+    Err(_) => CString::new("AppFlowy Rust panic (payload contained NUL)").unwrap(),
+  };
+  let tag = CString::new("RustPanic").unwrap();
+  unsafe {
+    __android_log_print(
+      6, // ANDROID_LOG_ERROR
+      tag.as_ptr(),
+      b"%s\0".as_ptr() as *const c_char,
+      text.as_ptr(),
+    );
+  }
+}
 
 lazy_static! {
   static ref DART_APPFLOWY_CORE: DartAppFlowyCore = DartAppFlowyCore::new();
@@ -112,6 +185,7 @@ impl DartAppFlowyCore {
 
 #[no_mangle]
 pub extern "C" fn init_sdk(_port: i64, data: *mut c_char) -> i64 {
+  install_panic_logger();
   let c_str = unsafe {
     if data.is_null() {
       return -1;
@@ -173,6 +247,7 @@ pub extern "C" fn init_sdk(_port: i64, data: *mut c_char) -> i64 {
 #[no_mangle]
 #[allow(clippy::let_underscore_future)]
 pub extern "C" fn async_event(port: i64, input: *const u8, len: usize) {
+  install_panic_logger();
   let request: AFPluginRequest = FFIRequest::from_u8_pointer(input, len).into();
   #[cfg(feature = "verbose_log")]
   trace!(
@@ -229,6 +304,7 @@ impl Future for Runner {
 
 #[no_mangle]
 pub extern "C" fn sync_event(_input: *const u8, _len: usize) -> *const u8 {
+  install_panic_logger();
   error!("unimplemented sync_event");
 
   let response_bytes = vec![];
@@ -238,6 +314,7 @@ pub extern "C" fn sync_event(_input: *const u8, _len: usize) -> *const u8 {
 
 #[no_mangle]
 pub extern "C" fn set_stream_port(notification_port: i64) -> i32 {
+  install_panic_logger();
   unregister_all_notification_sender();
   register_notification_sender(DartNotificationSender::new(notification_port));
   0
@@ -245,6 +322,7 @@ pub extern "C" fn set_stream_port(notification_port: i64) -> i32 {
 
 #[no_mangle]
 pub extern "C" fn set_log_stream_port(port: i64) -> i32 {
+  install_panic_logger();
   *LOG_STREAM_ISOLATE.write().unwrap() = Some(Isolate::new(port));
   0
 }
@@ -276,6 +354,7 @@ async fn post_to_flutter(response: AFPluginEventResponse, port: i64) {
 
 #[no_mangle]
 pub extern "C" fn rust_log(level: i64, data: *const c_char) {
+  install_panic_logger();
   if data.is_null() {
     error!("[flutter error]: null pointer provided to backend_log");
     return;
@@ -306,6 +385,7 @@ pub extern "C" fn rust_log(level: i64, data: *const c_char) {
 
 #[no_mangle]
 pub extern "C" fn set_env(_data: *const c_char) {
+  install_panic_logger();
   // Deprecated
 }
 
