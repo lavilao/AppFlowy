@@ -3,7 +3,7 @@
 **A debugging report and upstream integration guide**
 
 - Device under test: **Redmi 9A** (MediaTek Helio G25), **Android 11**, `primaryCpuAbi=armeabi-v7a` — a 32-bit-only device with no 64-bit fallback.
-- Code base: AppFlowy 0.11.x, Flutter 3.27.4, Rust 1.85.0, NDK r27d.
+- Code base: upstream AppFlowy **0.15.1** tree (the pubspec label inherited from upstream said 0.11.x — see §9), Flutter 3.27.4, Rust 1.85.0, NDK r27d.
 - Outcome: the app now installs, loads the Rust backend and runs on armeabi-v7a. Three independent bugs had to be fixed; each one was invisible (or silently different) on 64-bit builds.
 - Commits (this fork, in order): `f9168cc`, `3c76c12`, `f481104`, `3f715a2`.
 
@@ -322,3 +322,20 @@ strings -a libdart_ffi.so | grep -m1 "Android \(NDK\|clang\)"
 #   Flutter 3.27.4 · Rust 1.85.0 · cargo-ndk 3.5.4 · NDK 27.3.13750724 (r27d)
 #   artifact + GitHub release: appflowy-armeabi-v7a.apk + .sha256, tag = pubspec version
 ```
+
+---
+
+## 9. Version labeling: why this fork's releases said 0.11.x, then 0.15.1
+
+AppFlowy's `pubspec.yaml` `version:` field is **stale on upstream main**: even inside the official
+`0.15.1` release the field still reads `0.11.4` (the desktop/mobile release version is injected at
+build time by upstream's release pipeline, not read from pubspec). The fork's armeabi-v7a workflow
+derives its release tag from that pubspec field, so during bring-up the field was bumped twice
+(`0.11.4 → 0.11.5 → 0.11.6`) purely to mint fresh release tags — those numbers say nothing about
+the code's age.
+
+In fact the fork's base snapshot is **tree-identical to the upstream `0.15.1` release tree** except
+for README images (`git diff <fork-base> 0.15.1` = README.md only), so after syncing upstream tag
+`0.15.1` the fork relabels its releases to **v0.15.1** to match the upstream release the code
+corresponds to. Rust sources are byte-identical to the released v0.11.6 build (the sync touched
+README only), so all findings and fixes in this report apply unchanged.
