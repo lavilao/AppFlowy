@@ -9,6 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flowy_infra_ui/flowy_infra_ui.dart';
 import 'package:flutter/material.dart';
 
+import 'local_intelligence_actions.dart';
 import 'operations/ai_writer_entities.dart';
 
 const _improveWritingToolbarItemId = 'appflowy.editor.ai_improve_writing';
@@ -86,7 +87,43 @@ class _AiWriterToolbarActionListState extends State<AiWriterToolbarActionList> {
         divider(),
         actionWrapper(AiWriterCommand.makeLonger),
         actionWrapper(AiWriterCommand.makeShorter),
+        // On-device intelligence: deterministic, offline and free. These reuse
+        // the user's own words, so they work without an account or a model.
+        divider(),
+        localActionWrapper(
+          icon: FlowySvgs.ai_summarize_s,
+          label: LocaleKeys.document_plugins_aiWriter_summarize.tr(),
+          action: LocalIntelligenceAction.summarize,
+        ),
+        localActionWrapper(
+          icon: FlowySvgs.checklist_s,
+          label: LocaleKeys.document_plugins_aiWriter_extractActionItems.tr(),
+          action: LocalIntelligenceAction.extractActionItems,
+        ),
       ],
+    );
+  }
+
+  Widget localActionWrapper({
+    required FlowySvgData icon,
+    required String label,
+    required LocalIntelligenceAction action,
+  }) {
+    return SizedBox(
+      height: 36,
+      child: FlowyButton(
+        leftIconSize: const Size.square(20),
+        leftIcon: FlowySvg(icon),
+        iconPadding: 12,
+        text: FlowyText(
+          label,
+          figmaLineHeight: 20,
+        ),
+        onTap: () async {
+          popoverController.close();
+          await runLocalIntelligenceAction(widget.editorState, action);
+        },
+      ),
     );
   }
 

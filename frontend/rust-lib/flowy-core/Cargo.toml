@@ -38,6 +38,7 @@ flowy-storage-pub = { workspace = true }
 client-api.workspace = true
 flowy-ai = { workspace = true }
 flowy-ai-pub = { workspace = true }
+flowy-intelligence = { workspace = true }
 
 
 tracing.workspace = true
@@ -77,6 +78,7 @@ dart = [
   "flowy-folder/dart",
   "flowy-database2/dart",
   "flowy-ai/dart",
+  "flowy-intelligence/dart",
   "flowy-storage/dart",
 ]
 openssl_vendored = ["flowy-sqlite/openssl_vendored"]

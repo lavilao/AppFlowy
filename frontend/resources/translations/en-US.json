@@ -1860,6 +1860,8 @@
         "fixSpelling": "Fix spelling & grammar",
         "improveWriting": "Improve writing",
         "summarize": "Summarize",
+        "extractActionItems": "Extract to-dos",
+        "nothingToAnalyze": "Select some text first",
         "explain": "Explain",
         "makeShorter": "Make shorter",
         "makeLonger": "Make longer"

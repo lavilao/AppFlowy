@@ -25,6 +25,7 @@ pub fn make_plugins(
   let date_plugin = flowy_date::event_map::init();
   let search_plugin = flowy_search::event_map::init(search_manager);
   let ai_plugin = flowy_ai::event_map::init(ai_manager);
+  let intelligence_plugin = flowy_intelligence::event_map::init();
   let file_storage_plugin = flowy_storage::event_map::init(file_storage_manager);
   vec![
     user_plugin,
@@ -34,6 +35,7 @@ pub fn make_plugins(
     date_plugin,
     search_plugin,
     ai_plugin,
+    intelligence_plugin,
     file_storage_plugin,
   ]
 }

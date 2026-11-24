@@ -2327,6 +2327,7 @@ dependencies = [
  "flowy-error",
  "flowy-folder",
  "flowy-folder-pub",
+ "flowy-intelligence",
  "flowy-search",
  "flowy-search-pub",
  "flowy-server",
@@ -2586,6 +2587,25 @@ dependencies = [
  "tokio",
  "uuid",
 ]
+
+[[package]]
+name = "flowy-intelligence"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "flowy-codegen",
+ "flowy-derive",
+ "flowy-error",
+ "flowy-intelligence-core",
+ "lib-dispatch",
+ "protobuf",
+ "strum_macros 0.21.1",
+ "tracing",
+]
+
+[[package]]
+name = "flowy-intelligence-core"
+version = "0.1.0"
 
 [[package]]
 name = "flowy-notification"
