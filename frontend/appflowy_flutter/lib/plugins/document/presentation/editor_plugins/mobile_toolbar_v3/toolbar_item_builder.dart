@@ -10,6 +10,8 @@ final _listBlockTypes = [
 final _defaultToolbarItems = [
   addBlockToolbarItem,
   aaToolbarItem,
+  localSummarizeToolbarItem,
+  localExtractActionItemsToolbarItem,
   todoListToolbarItem,
   bulletedListToolbarItem,
   addAttachmentItem,
@@ -26,6 +28,8 @@ final _defaultToolbarItems = [
 final _listToolbarItems = [
   addBlockToolbarItem,
   aaToolbarItem,
+  localSummarizeToolbarItem,
+  localExtractActionItemsToolbarItem,
   outdentToolbarItem,
   indentToolbarItem,
   todoListToolbarItem,
@@ -43,6 +47,8 @@ final _listToolbarItems = [
 
 final _textToolbarItems = [
   aaToolbarItem,
+  localSummarizeToolbarItem,
+  localExtractActionItemsToolbarItem,
   boldToolbarItem,
   italicToolbarItem,
   underlineToolbarItem,
