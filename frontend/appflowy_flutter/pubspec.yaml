@@ -127,6 +127,7 @@ dependencies:
   shared_preferences: ^2.2.2
   sheet:
   sized_context: ^1.0.0+4
+  speech_to_text: ^7.4.0
   string_validator: ^1.0.0
   styled_widget: ^0.4.1
   super_clipboard: ^0.8.24

@@ -1862,6 +1862,10 @@
         "summarize": "Summarize",
         "extractActionItems": "Extract to-dos",
         "nothingToAnalyze": "Select some text first",
+        "voiceInputPermission": "Allow microphone access to dictate",
+        "voiceInputCaret": "Place the cursor in the text to dictate",
+        "voiceInputNothingHeard": "Didn't catch that",
+        "voiceInputUnavailable": "Dictation isn't available on this device",
         "explain": "Explain",
         "makeShorter": "Make shorter",
         "makeLonger": "Make longer"

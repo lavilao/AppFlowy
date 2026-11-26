@@ -30,7 +30,8 @@ Future<void> runLocalIntelligenceAction(
 
   final markdown = switch (action) {
     LocalIntelligenceAction.summarize => await _summarize(text),
-    LocalIntelligenceAction.extractActionItems => await _extractActionItems(text),
+    LocalIntelligenceAction.extractActionItems =>
+      await _extractActionItems(text),
   };
 
   if (markdown == null || markdown.trim().isEmpty) {
@@ -79,6 +80,30 @@ String? _actionItemsMarkdown(List<ActionItemPB> items) {
     return null;
   }
   return items.map((item) => '- [ ] ${item.title}').join('\n');
+}
+
+/// Inserts [text] at [caret], or at the caret of the document when the caret
+/// moved while [caret] was waiting (dictation).
+///
+/// The mobile toolbar rebuilds its overlay while it runs, so the selection it
+/// captured when the action started is passed in explicitly.
+Future<void> insertPlainText(
+  EditorState editorState,
+  Selection caret,
+  String text,
+) async {
+  final current = editorState.selection;
+  final target = (current != null && current.isCollapsed) ? current : caret;
+  if (!target.isCollapsed) {
+    return;
+  }
+  final node = editorState.getNodeAtPath(target.end.path);
+  if (node == null) {
+    return;
+  }
+  final transaction = editorState.transaction
+    ..insertText(node, target.end.offset, text);
+  await editorState.apply(transaction);
 }
 
 Future<void> _insertMarkdown(EditorState editorState, String markdown) async {

@@ -1,3 +1,4 @@
+import 'package:appflowy/plugins/document/presentation/editor_plugins/ai/local_voice_input.dart';
 import 'package:appflowy/plugins/document/presentation/editor_plugins/plugins.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 
@@ -10,6 +11,7 @@ final _listBlockTypes = [
 final _defaultToolbarItems = [
   addBlockToolbarItem,
   aaToolbarItem,
+  if (LocalVoiceInput.isSupported) localVoiceToolbarItem,
   localSummarizeToolbarItem,
   localExtractActionItemsToolbarItem,
   todoListToolbarItem,
@@ -28,6 +30,7 @@ final _defaultToolbarItems = [
 final _listToolbarItems = [
   addBlockToolbarItem,
   aaToolbarItem,
+  if (LocalVoiceInput.isSupported) localVoiceToolbarItem,
   localSummarizeToolbarItem,
   localExtractActionItemsToolbarItem,
   outdentToolbarItem,
