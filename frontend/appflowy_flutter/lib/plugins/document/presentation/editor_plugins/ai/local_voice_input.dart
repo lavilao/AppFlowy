@@ -39,6 +39,12 @@ class LocalVoiceInput {
   bool _written = false;
   String _transcript = '';
 
+  /// Dictation is wired up for Android. The Apple builds need their own usage
+  /// descriptions before the same entry point can be shown there, so the
+  /// toolbar only adds the microphone where it can actually listen.
+  static bool get isSupported =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+
   /// Starts listening and writes the transcript at the caret of [editorState].
   ///
   /// The caret is captured here on purpose: the overlay holding this action is
@@ -200,6 +206,5 @@ class LocalVoiceInput {
         LocaleKeys.document_plugins_aiWriter_voiceInputNothingHeard.tr(),
       );
 
-  static void _show(String message) =>
-      showToastNotification(message: message);
+  static void _show(String message) => showToastNotification(message: message);
 }

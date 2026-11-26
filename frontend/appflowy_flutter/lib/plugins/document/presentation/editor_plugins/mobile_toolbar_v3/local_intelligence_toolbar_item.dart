@@ -50,9 +50,8 @@ final localVoiceToolbarItem = AppFlowyMobileToolbarItem(
           editorState: editorState,
           icon: FlowySvgs.microphone_s,
           isSelected: () => isListening,
-          onTap: () => isListening
-              ? _voiceInput.stop()
-              : _voiceInput.start(editorState),
+          onTap: () =>
+              isListening ? _voiceInput.stop() : _voiceInput.start(editorState),
         );
       },
     );
