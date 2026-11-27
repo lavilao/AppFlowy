@@ -1,3 +1,5 @@
+import 'package:appflowy/ai/intelligence/cactus/cactus_engine.dart';
+import 'package:appflowy/ai/intelligence/local_translation_service.dart';
 import 'package:appflowy/plugins/document/presentation/editor_plugins/ai/local_voice_input.dart';
 import 'package:appflowy/plugins/document/presentation/editor_plugins/plugins.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
@@ -12,6 +14,8 @@ final _defaultToolbarItems = [
   addBlockToolbarItem,
   aaToolbarItem,
   if (LocalVoiceInput.isSupported) localVoiceToolbarItem,
+  if (LocalTranslationService.isSupported) localTranslateToolbarItem,
+  if (CactusEngine.isSupported) localScanToolbarItem,
   localSummarizeToolbarItem,
   localExtractActionItemsToolbarItem,
   todoListToolbarItem,
@@ -31,6 +35,8 @@ final _listToolbarItems = [
   addBlockToolbarItem,
   aaToolbarItem,
   if (LocalVoiceInput.isSupported) localVoiceToolbarItem,
+  if (LocalTranslationService.isSupported) localTranslateToolbarItem,
+  if (CactusEngine.isSupported) localScanToolbarItem,
   localSummarizeToolbarItem,
   localExtractActionItemsToolbarItem,
   outdentToolbarItem,
@@ -50,6 +56,7 @@ final _listToolbarItems = [
 
 final _textToolbarItems = [
   aaToolbarItem,
+  if (LocalTranslationService.isSupported) localTranslateToolbarItem,
   localSummarizeToolbarItem,
   localExtractActionItemsToolbarItem,
   boldToolbarItem,

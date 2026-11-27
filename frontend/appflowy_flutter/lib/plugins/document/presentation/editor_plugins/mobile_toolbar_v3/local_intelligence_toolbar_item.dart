@@ -1,5 +1,7 @@
 import 'package:appflowy/generated/flowy_svgs.g.dart';
+import 'package:appflowy/plugins/document/presentation/editor_plugins/ai/cactus_scan_action.dart';
 import 'package:appflowy/plugins/document/presentation/editor_plugins/ai/local_intelligence_actions.dart';
+import 'package:appflowy/plugins/document/presentation/editor_plugins/ai/local_translation_action.dart';
 import 'package:appflowy/plugins/document/presentation/editor_plugins/ai/local_voice_input.dart';
 import 'package:appflowy/plugins/document/presentation/editor_plugins/mobile_toolbar_v3/appflowy_mobile_toolbar_item.dart';
 import 'package:flutter/widgets.dart';
@@ -31,6 +33,31 @@ final localExtractActionItemsToolbarItem = AppFlowyMobileToolbarItem(
         editorState,
         LocalIntelligenceAction.extractActionItems,
       ),
+    );
+  },
+);
+
+/// Reads the printed text out of a picture with the bundled Mirage model.
+///
+/// It only shows where the model can run; a build without the weights answers
+/// with the same "not available" message as the other on-device actions.
+final localScanToolbarItem = AppFlowyMobileToolbarItem(
+  itemBuilder: (context, editorState, _, __, ___) {
+    return AppFlowyMobileToolbarIconItem(
+      editorState: editorState,
+      icon: FlowySvgs.ai_text_image_s,
+      onTap: () => runLocalScanAction(editorState),
+    );
+  },
+);
+
+/// Translates the selection or the note with ML Kit, entirely on the device.
+final localTranslateToolbarItem = AppFlowyMobileToolbarItem(
+  itemBuilder: (context, editorState, _, __, ___) {
+    return AppFlowyMobileToolbarIconItem(
+      editorState: editorState,
+      icon: FlowySvgs.ai_translate_s,
+      onTap: () => runLocalTranslationAction(context, editorState),
     );
   },
 );

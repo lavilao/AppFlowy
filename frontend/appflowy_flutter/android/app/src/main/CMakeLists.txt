@@ -48,3 +48,46 @@ file(COPY
     ${SYSROOT}/usr/lib/x86_64-linux-android/libc++_shared.so
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/jniLibs/x86_64
 )
+
+# ────────────────────────────────────────────────────────────────────────────
+# Cactus on-device intelligence.
+#
+# The Cactus engine is published as a STATIC C++ library plus a native runner
+# binary; a runner cannot be shipped in an APK, so the engine is linked into
+# libflowy_cactus.so, which Dart loads over FFI. `--whole-archive` is required
+# because Dart looks the engine symbols up by name at runtime, which the
+# linker cannot see.
+#
+# frontend/scripts/fetch_cactus.sh downloads the per-ABI archives (they are
+# not committed). Without them this section is skipped and the Dart side hides
+# the features — the app still builds.
+# ────────────────────────────────────────────────────────────────────────────
+set(CACTUS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cactus/${ANDROID_ABI})
+if(EXISTS ${CACTUS_DIR}/libcactus.a)
+    message(CONFIGURE_LOG "Linking the Cactus engine for ${ANDROID_ABI}")
+
+    add_library(cactus_engine STATIC IMPORTED)
+    set_target_properties(cactus_engine PROPERTIES
+        IMPORTED_LOCATION ${CACTUS_DIR}/libcactus.a)
+
+    add_library(flowy_cactus SHARED cactus/cactus_bridge.c)
+    target_include_directories(flowy_cactus PRIVATE ${CACTUS_DIR})
+
+    # The engine is C++, so it resolves against the NDK's libc++: the very
+    # runtime this build copies into the APK above. Linking it the same way as
+    # libdart_ffi.so is what keeps one libc++ in the APK.
+    find_library(CXX_SHARED c++_shared)
+    find_library(ANDROID_LOG_LIB log)
+
+    target_link_libraries(flowy_cactus
+        "-Wl,--whole-archive"
+        cactus_engine
+        "-Wl,--no-whole-archive"
+        ${CXX_SHARED}
+        ${ANDROID_LOG_LIB})
+
+    set_target_properties(flowy_cactus PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/jniLibs/${ANDROID_ABI})
+else()
+    message(CONFIGURE_LOG "Cactus engine not present for ${ANDROID_ABI}; skipping libflowy_cactus.so")
+endif()

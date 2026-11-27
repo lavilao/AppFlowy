@@ -363,6 +363,28 @@ jobs:
           cargo make pub_get
         shell: bash
 
+      # ──────────────────────────────────────────────────────────────────────
+      # Cactus on-device intelligence.
+      #
+      # The static engine (5 MB, both Android ABIs) is linked into
+      # libflowy_cactus.so by src/main/CMakeLists.txt, and the three .cact
+      # models (74 MB) are packaged as Flutter assets. Neither is committed,
+      # so both are fetched here from the Apache-2.0 Cactus release on Hugging
+      # Face, pinned by revision and verified against a SHA-256. A failure
+      # here fails the build: shipping without the models would silently
+      # remove the features they power.
+      # ──────────────────────────────────────────────────────────────────────
+      - name: Fetch the Cactus engine and models
+        working-directory: frontend
+        run: |
+          set -euo pipefail
+          bash ./scripts/fetch_cactus.sh all
+          echo "==== models to be packaged ===="
+          ls -l appflowy_flutter/assets/cactus
+          echo "==== engine to be linked ===="
+          ls -l appflowy_flutter/android/app/src/main/cactus/*/libcactus.a
+        shell: bash
+
       - name: Build APK for ARMeabiv7
         working-directory: frontend/appflowy_flutter
         run: |
