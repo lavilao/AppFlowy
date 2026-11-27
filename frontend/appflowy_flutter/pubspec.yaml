@@ -117,7 +117,9 @@ dependencies:
   nanoid: ^1.0.0
   numerus: ^2.1.2
   # Used to open local files on Mobile
-  open_filex: ^4.5.0
+  # 5.x drops the removed Flutter v1 embedding registerWith(Registrar) hook;
+  # the OpenFilex.open / OpenResult API this app uses is unchanged.
+  open_filex: ^5.0.0
   package_info_plus: ^8.0.2
   path: ^1.8.3
   path_provider: ^2.0.15
