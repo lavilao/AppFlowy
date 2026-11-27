@@ -44,18 +44,18 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  FLUTTER_VERSION: "3.27.4"
+  FLUTTER_VERSION: "3.50.1"
   RUST_TOOLCHAIN: "1.85.0"
   CARGO_MAKE_VERSION: "0.37.18"
   CARGO_NDK_VERSION: "3.5.4"
-  # r27d. MUST stay in lockstep with ndkVersion in
+  # r28c. MUST stay in lockstep with ndkVersion in
   # frontend/appflowy_flutter/android/app/build.gradle: libdart_ffi.so is
   # linked against THIS NDK's libc++_shared.so, and gradle's externalNativeBuild
   # (src/main/CMakeLists.txt) packages THIS NDK's libc++_shared.so. A mismatch
-  # (e.g. r24 runtime + r27d-linked Rust lib) fails at dlopen on launch:
+  # (e.g. r24 runtime + r28c-linked Rust lib) fails at dlopen on launch:
   #   cannot locate symbol "_ZTTNSt6__ndk118basic_stringstream..."
-  # r27d == 27.3.13750724 (https://github.com/android/ndk/releases/tag/r27d).
-  NDK_VERSION: "27.3.13750724"
+  # r28c == 28.2.13676358 (https://github.com/android/ndk/releases/tag/r28c).
+  NDK_VERSION: "28.2.13676358"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -115,24 +115,24 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.10
+          gradle-version: 9.3.1
 
       # ──────────────────────────────────────────────────────────────────────
-      # PIN the NDK to r27d so that EVERY piece of native code in the APK uses
+      # PIN the NDK to r28c so that EVERY piece of native code in the APK uses
       # the same libc++ runtime:
-      #   * cargo-ndk links libdart_ffi.so against r27d's libc++_shared.so
+      #   * cargo-ndk links libdart_ffi.so against r28c's libc++_shared.so
       #     (119 undefined __ndk1 symbols, resolved at dlopen time);
-      #   * gradle (ndkVersion 27.3.13750724 in app/build.gradle) builds the
-      #     CMake stub and copies r27d's libc++_shared.so into the APK.
+      #   * gradle (ndkVersion 28.2.13676358 in app/build.gradle) builds the
+      #     CMake stub and copies r28c's libc++_shared.so into the APK.
       # Without this pin, cargo-ndk picks whatever NDK the runner image has
       # (drifts over time) and the APK can end up with a libc++ runtime older
       # than the one libdart_ffi.so was linked against → dlopen fails on
       # launch with "cannot locate symbol _ZTTNSt6__ndk118basic_stringstream..."
       # (the Redmi 9A black-screen crash). ANDROID_NDK_HOME/NDK_HOME pin
       # cargo-ndk; ndkVersion pins gradle — both now point at the exact same
-      # r27d build.
+      # r28c build.
       # ──────────────────────────────────────────────────────────────────────
-      - name: Install pinned Android NDK r27d (27.3.13750724)
+      - name: Install pinned Android NDK r28c (28.2.13676358)
         run: |
           set -euo pipefail
           NDK_VERSION="${{ env.NDK_VERSION }}"
@@ -157,10 +157,10 @@ jobs:
           install_via_direct_download() {
             echo "Installing NDK $NDK_VERSION from the official zip (dl.google.com)..."
             curl -sSL --retry 3 -o /tmp/android-ndk-linux.zip \
-              "https://dl.google.com/android/repository/android-ndk-r27d-linux.zip"
+              "https://dl.google.com/android/repository/android-ndk-r28c-linux.zip"
             rm -rf /tmp/ndk-extract "$NDK_DIR"
             unzip -q /tmp/android-ndk-linux.zip -d /tmp/ndk-extract
-            mv /tmp/ndk-extract/android-ndk-r27d "$NDK_DIR"
+            mv /tmp/ndk-extract/android-ndk-r28c "$NDK_DIR"
             rm -rf /tmp/ndk-extract /tmp/android-ndk-linux.zip
           }
 
@@ -465,10 +465,10 @@ jobs:
             **Architecture:** `armeabi-v7a` (32-bit ARM Android)
             **Release Tag:** `${{ steps.release_info.outputs.tag }}`
             **Commit:** `${{ github.sha }}`
-            **Flutter:** ${{ env.FLUTTER_VERSION }} · **Rust:** ${{ env.RUST_TOOLCHAIN }} · **NDK:** r27d (`${{ env.NDK_VERSION }}`)
+            **Flutter:** ${{ env.FLUTTER_VERSION }} · **Rust:** ${{ env.RUST_TOOLCHAIN }} · **NDK:** r28c (`${{ env.NDK_VERSION }}`)
 
             - Built for 32-bit ARM devices (e.g. Redmi 9A / Helio G25, Android 11)
-            - `libdart_ffi.so` and the packaged `libc++_shared.so` come from the SAME NDK r27d runtime — verified by a post-build `__ndk1` symbol check in CI
+            - `libdart_ffi.so` and the packaged `libc++_shared.so` come from the SAME NDK r28c runtime — verified by a post-build `__ndk1` symbol check in CI
             - Stable release signature: updates install over previous releases without losing user data
 
             #### Verification

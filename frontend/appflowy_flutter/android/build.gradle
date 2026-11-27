@@ -1,12 +1,15 @@
 buildscript {
-    ext.kotlin_version = '1.8.0'
+    ext.kotlin_version = '2.4.21'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.0'
+        // Flutter 3.50's Gradle plugin requires AGP >= 9.1.1, Gradle >= 9.3.1
+        // and Kotlin >= 2.4.10 (see DependencyVersionChecker.kt in
+        // packages/flutter_tools/gradle).
+        classpath 'com.android.tools.build:gradle:9.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -18,12 +21,15 @@ allprojects {
     }
 }
 
-rootProject.buildDir = '../build'
+// Gradle 9 removed Project.buildDir; layout.buildDirectory is the replacement.
+// Keep the historical layout: <flutter project>/build/<module>.
+def appflowyBuildDir = rootProject.layout.buildDirectory.dir('../build').get()
+rootProject.layout.buildDirectory.set(appflowyBuildDir)
 subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.layout.buildDirectory.set(appflowyBuildDir.dir(project.name))
     project.evaluationDependsOn(':app')
 }
 
 tasks.register("clean", Delete) {
-    delete rootProject.buildDir
+    delete rootProject.layout.buildDirectory
 }
