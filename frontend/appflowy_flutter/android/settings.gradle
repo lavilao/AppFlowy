@@ -1,27 +1,31 @@
-include ':app'
+pluginManagement {
+    def flutterSdkPath = {
+        def properties = new Properties()
+        file("local.properties").withInputStream { properties.load(it) }
+        def flutterSdkPath = properties.getProperty("flutter.sdk")
+        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+        return flutterSdkPath
+    }()
 
-def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
-def properties = new Properties()
+    // Flutter 3.50 builds its Gradle plugin from the SDK instead of applying
+    // the old script: "app_plugin_loader.gradle" may no longer be applied with
+    // `apply from:`, it has to be included as a plugin (and the plugin loader
+    // then pulls in every Flutter plugin declared in .flutter-plugins-dependencies).
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
-assert localPropertiesFile.exists()
-localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
-
-def flutterSdkPath = properties.getProperty("flutter.sdk")
-assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
-apply from: "$flutterSdkPath/packages/flutter_tools/gradle/app_plugin_loader.gradle"
-
-
-def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
-
-def plugins = new Properties()
-def pluginsFile = new File(flutterProjectRoot.toFile(), '.flutter-plugins')
-
-if(pluginsFile.exists()){
-    pluginsFile.withReader('UTF-8'){reader -> plugins.load(reader)}
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
 }
 
-plugins.each{name, path ->
-        def pluginDirectory = flutterProjectRoot.resolve(path).resolve('android').toFile()
-        include ":$name"
-        project(":$name").projectDir  = pluginDirectory
+plugins {
+    id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+    // Plugin versions live here now that the buildscripts are gone; these are
+    // the minimums Flutter 3.50's Gradle plugin enforces.
+    id "com.android.application" version "9.1.1" apply false
+    id "org.jetbrains.kotlin.android" version "2.4.21" apply false
 }
+
+include ":app"
