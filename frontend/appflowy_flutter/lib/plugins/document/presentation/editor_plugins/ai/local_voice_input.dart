@@ -68,7 +68,7 @@ class LocalVoiceInput {
   /// The caret is captured here on purpose: the overlay holding this action is
   /// rebuilt while the user talks, and dictation should not move it around.
   Future<void> start(EditorState editorState) async {
-    if (_isStarting || _speech.isListening) {
+    if (_isStarting || _offline || _speech.isListening) {
       return;
     }
     _isStarting = true;
@@ -234,7 +234,16 @@ class LocalVoiceInput {
   /// speech model was trained on.
   Future<String> _transcribe(String path) async {
     final bytes = await File(path).readAsBytes();
-    final usable = bytes.length - (bytes.length % 2);
+    // `record` writes headerless PCM for pcm16bits, but tolerate a RIFF header
+    // in case a platform prepends one: its 44 bytes would otherwise be decoded
+    // as the first samples and come out as noise.
+    final header = bytes.length >= 12 &&
+        bytes[0] == 0x52 && // R
+        bytes[1] == 0x49 && // I
+        bytes[2] == 0x46 && // F
+        bytes[3] == 0x46; // F
+    final start = header ? 44 : 0;
+    final usable = bytes.length - start - ((bytes.length - start) % 2);
     if (usable <= 0) {
       return '';
     }
@@ -242,8 +251,8 @@ class LocalVoiceInput {
     // than viewing the buffer as Int16, which would assume an aligned offset.
     final data = ByteData.sublistView(
       bytes,
-      bytes.offsetInBytes,
-      bytes.offsetInBytes + usable,
+      bytes.offsetInBytes + start,
+      bytes.offsetInBytes + start + usable,
     );
     final samples = Int16List(usable ~/ 2);
     for (var i = 0; i < samples.length; i++) {

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:appflowy/ai/intelligence/cactus/cactus_engine.dart';
 
 /// One tool, described the way the model reads it literally: "the action, word
@@ -95,5 +93,3 @@ String _today() {
   return '${now.year}-$month-$day $weekday $hour:$minute';
 }
 
-/// Kept for callers that want to inspect the raw answer while debugging.
-String debugTurnJson(CactusTurn turn) => jsonEncode(turn.json);

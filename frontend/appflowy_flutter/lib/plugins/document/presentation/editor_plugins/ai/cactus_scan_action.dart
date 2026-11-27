@@ -62,8 +62,15 @@ class _Rgb {
 
 _Rgb _rgbOf(img.Image image) {
   final longest = image.width > image.height ? image.width : image.height;
-  final resized = longest > _maxScanEdge
-      ? img.copyResize(image, width: _maxScanEdge)
+  // Scale both edges: resizing only the width would stretch the picture and
+  // make the text reader's job harder.
+  final scale = longest > _maxScanEdge ? _maxScanEdge / longest : 1.0;
+  final resized = scale < 1.0
+      ? img.copyResize(
+          image,
+          width: (image.width * scale).round(),
+          height: (image.height * scale).round(),
+        )
       : image;
   // Mirage takes packed 8-bit RGB, not the decoded image object.
   final rgb = resized.convert(numChannels: 3);

@@ -73,19 +73,28 @@ if(EXISTS ${CACTUS_DIR}/libcactus.a)
     add_library(flowy_cactus SHARED cactus/cactus_bridge.c)
     target_include_directories(flowy_cactus PRIVATE ${CACTUS_DIR})
 
-    # The engine is C++, so it resolves against the NDK's libc++: the very
-    # runtime this build copies into the APK above. `c++_shared` and `log` are
-    # both resolvable by name here (the NDK toolchain provides the target or,
-    # at worst, the linker finds them in the sysroot).
+    # libc++ by path, in the very runtime copied into the APK above: the engine
+    # is C++, and letting the linker pick a different (or a second) C++ runtime
+    # is the NDK-runtime-skew crash this project already hit once. Written out
+    # per ABI because the sysroot triples are not the ABI names.
+    if(ANDROID_ABI STREQUAL "armeabi-v7a")
+        set(ANDROID_CXX_TRIPLE arm-linux-androideabi)
+    elseif(ANDROID_ABI STREQUAL "arm64-v8a")
+        set(ANDROID_CXX_TRIPLE aarch64-linux-android)
+    elseif(ANDROID_ABI STREQUAL "x86_64")
+        set(ANDROID_CXX_TRIPLE x86_64-linux-android)
+    endif()
+
     target_link_libraries(flowy_cactus
         "-Wl,--whole-archive"
         cactus_engine
         "-Wl,--no-whole-archive"
-        c++_shared
+        ${SYSROOT}/usr/lib/${ANDROID_CXX_TRIPLE}/libc++_shared.so
         log)
 
-    set_target_properties(flowy_cactus PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/jniLibs/${ANDROID_ABI})
+    # No LIBRARY_OUTPUT_DIRECTORY: AGP packages every externalNativeBuild
+    # output itself. Pointing it at jniLibs too would ship the same .so twice
+    # (jniLibs is a source set of this module).
 else()
     message(CONFIGURE_LOG "Cactus engine not present for ${ANDROID_ABI}; skipping libflowy_cactus.so")
 endif()

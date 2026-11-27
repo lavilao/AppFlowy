@@ -18,6 +18,7 @@
 #include <fcntl.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -26,17 +27,46 @@
 
 #define FLOWY_CACTUS_API __attribute__((visibility("default")))
 
-// The mapped weights must stay alive for as long as the engine holds pointers
-// into them, so the mapping outlives the load call.
-static void* g_weights = NULL;
-static size_t g_weights_size = 0;
+// The engine keeps pointers into the archive it was given, and it can hold a
+// text model and a speech model at the same time (Needle 3 + Whistle), so every
+// mapping must outlive every other load. Unmapping on the next load would leave
+// the previously loaded model pointing at freed pages — a crash the moment the
+// user dictates after extracting to-dos, or the other way round.
+//
+// Reloading the same path is a no-op: the archive is already mapped and loaded.
+#define FLOWY_CACTUS_MAX_MAPPINGS 8
 
-FLOWY_CACTUS_API void flowy_cactus_release(void) {
-  if (g_weights != NULL) {
-    munmap(g_weights, g_weights_size);
-    g_weights = NULL;
-    g_weights_size = 0;
+typedef struct {
+  char* path;
+  void* address;
+  size_t size;
+} flowy_cactus_mapping;
+
+static flowy_cactus_mapping g_mappings[FLOWY_CACTUS_MAX_MAPPINGS];
+static int32_t g_mapping_count = 0;
+
+static flowy_cactus_mapping* find_mapping(const char* path) {
+  for (int32_t i = 0; i < g_mapping_count; i++) {
+    if (g_mappings[i].path != NULL && strcmp(g_mappings[i].path, path) == 0) {
+      return &g_mappings[i];
+    }
   }
+  return NULL;
+}
+
+// Drops every mapping. Only safe once no model is in use, so nothing calls it
+// during normal operation; the engine holds the archives for the process life.
+FLOWY_CACTUS_API void flowy_cactus_release(void) {
+  for (int32_t i = 0; i < g_mapping_count; i++) {
+    if (g_mappings[i].address != NULL) {
+      munmap(g_mappings[i].address, g_mappings[i].size);
+    }
+    free(g_mappings[i].path);
+    g_mappings[i].path = NULL;
+    g_mappings[i].address = NULL;
+    g_mappings[i].size = 0;
+  }
+  g_mapping_count = 0;
 }
 
 // Loads a .cact archive from disk. Returns the engine's capability bitmask
@@ -45,7 +75,13 @@ FLOWY_CACTUS_API int32_t flowy_cactus_load_file(const char* path) {
   if (path == NULL) {
     return -1;
   }
-  flowy_cactus_release();
+  if (find_mapping(path) != NULL) {
+    // Already mapped and loaded: report what the engine currently holds.
+    return (int32_t)cactus_models();
+  }
+  if (g_mapping_count >= FLOWY_CACTUS_MAX_MAPPINGS) {
+    return -5;
+  }
 
   int fd = open(path, O_RDONLY);
   if (fd < 0) {
@@ -70,8 +106,17 @@ FLOWY_CACTUS_API int32_t flowy_cactus_load_file(const char* path) {
     return capabilities;
   }
 
-  g_weights = mapped;
-  g_weights_size = size;
+  char* owned_path = strdup(path);
+  if (owned_path == NULL) {
+    // The model is loaded but the path cannot be remembered; keep the mapping
+    // (returning an error now would leave a loaded model nobody tracks) and
+    // let the next call for this path fail its way up instead.
+    return capabilities;
+  }
+  g_mappings[g_mapping_count].path = owned_path;
+  g_mappings[g_mapping_count].address = mapped;
+  g_mappings[g_mapping_count].size = size;
+  g_mapping_count++;
   return capabilities;
 }
 
