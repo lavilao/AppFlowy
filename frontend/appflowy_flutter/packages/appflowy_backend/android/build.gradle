@@ -1,23 +1,13 @@
 group 'com.plugin.appflowy_backend'
 version '1.0-SNAPSHOT'
 
-buildscript {
-    ext.kotlin_version = '1.8.0'
-    repositories {
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
+// No local buildscript: AGP and the Kotlin Gradle plugin are declared once in
+// android/settings.gradle, and Gradle 9 removed jcenter() (the repositories
+// block it used to need is now shared by the root project).
 rootProject.allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 
@@ -25,16 +15,16 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 33
+    compileSdk 36
     namespace 'com.plugin.appflowy_backend'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     sourceSets {
@@ -45,6 +35,5 @@ android {
     }
 }
 
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
+// Kotlin 2.x adds the stdlib automatically; kotlin-stdlib-jdk7 is no longer
+// published as a separate artifact.

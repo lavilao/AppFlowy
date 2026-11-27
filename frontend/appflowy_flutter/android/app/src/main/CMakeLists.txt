@@ -74,17 +74,15 @@ if(EXISTS ${CACTUS_DIR}/libcactus.a)
     target_include_directories(flowy_cactus PRIVATE ${CACTUS_DIR})
 
     # The engine is C++, so it resolves against the NDK's libc++: the very
-    # runtime this build copies into the APK above. Linking it the same way as
-    # libdart_ffi.so is what keeps one libc++ in the APK.
-    find_library(CXX_SHARED c++_shared)
-    find_library(ANDROID_LOG_LIB log)
-
+    # runtime this build copies into the APK above. `c++_shared` and `log` are
+    # both resolvable by name here (the NDK toolchain provides the target or,
+    # at worst, the linker finds them in the sysroot).
     target_link_libraries(flowy_cactus
         "-Wl,--whole-archive"
         cactus_engine
         "-Wl,--no-whole-archive"
-        ${CXX_SHARED}
-        ${ANDROID_LOG_LIB})
+        c++_shared
+        log)
 
     set_target_properties(flowy_cactus PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/jniLibs/${ANDROID_ABI})
