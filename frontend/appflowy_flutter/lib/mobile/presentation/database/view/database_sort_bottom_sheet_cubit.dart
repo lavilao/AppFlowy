@@ -58,7 +58,7 @@ class MobileSortEditorCubit extends Cubit<MobileSortEditorState> {
 }
 
 @freezed
-class MobileSortEditorState with _$MobileSortEditorState {
+abstract class MobileSortEditorState with _$MobileSortEditorState {
   factory MobileSortEditorState({
     required bool showBackButton,
     required String? editingSortId,

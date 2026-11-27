@@ -146,7 +146,7 @@ extension MenuResizeTypeExtension on MenuResizeType {
 }
 
 @freezed
-class HomeSettingEvent with _$HomeSettingEvent {
+abstract class HomeSettingEvent with _$HomeSettingEvent {
   const factory HomeSettingEvent.initial() = _Initial;
 
   const factory HomeSettingEvent.setEditPanel(EditPanelContext editContext) =
@@ -176,7 +176,7 @@ class HomeSettingEvent with _$HomeSettingEvent {
 }
 
 @freezed
-class HomeSettingState with _$HomeSettingState {
+abstract class HomeSettingState with _$HomeSettingState {
   const factory HomeSettingState({
     required EditPanelContext? panelContext,
     required WorkspaceLatestPB workspaceSetting,

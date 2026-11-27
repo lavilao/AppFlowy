@@ -77,7 +77,7 @@ class TextCellBloc extends Bloc<TextCellEvent, TextCellState> {
 }
 
 @freezed
-class TextCellEvent with _$TextCellEvent {
+abstract class TextCellEvent with _$TextCellEvent {
   const factory TextCellEvent.didReceiveCellUpdate(String? cellContent) =
       _DidReceiveCellUpdate;
   const factory TextCellEvent.didUpdateField(FieldInfo fieldInfo) =
@@ -87,7 +87,7 @@ class TextCellEvent with _$TextCellEvent {
 }
 
 @freezed
-class TextCellState with _$TextCellState {
+abstract class TextCellState with _$TextCellState {
   const factory TextCellState({
     required String? content,
     required ValueNotifier<String>? emoji,

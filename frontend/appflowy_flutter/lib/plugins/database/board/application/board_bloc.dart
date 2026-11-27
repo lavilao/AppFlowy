@@ -575,7 +575,7 @@ class BoardBloc extends Bloc<BoardEvent, BoardState> {
 }
 
 @freezed
-class BoardEvent with _$BoardEvent {
+abstract class BoardEvent with _$BoardEvent {
   const factory BoardEvent.initial() = _InitialBoard;
   const factory BoardEvent.createRow(
     String groupId,
@@ -615,7 +615,7 @@ class BoardEvent with _$BoardEvent {
 }
 
 @freezed
-class BoardState with _$BoardState {
+abstract class BoardState with _$BoardState {
   const BoardState._();
 
   const factory BoardState.loading() = _BoardLoadingState;

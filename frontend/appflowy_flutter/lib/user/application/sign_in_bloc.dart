@@ -493,7 +493,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
 }
 
 @freezed
-class SignInEvent with _$SignInEvent {
+abstract class SignInEvent with _$SignInEvent {
   // Sign in methods
   const factory SignInEvent.signInWithEmailAndPassword({
     required String email,
@@ -548,7 +548,7 @@ enum LoginType {
 }
 
 @freezed
-class SignInState with _$SignInState {
+abstract class SignInState with _$SignInState {
   const factory SignInState({
     String? email,
     String? password,

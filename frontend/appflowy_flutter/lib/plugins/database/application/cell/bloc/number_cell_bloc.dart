@@ -73,7 +73,7 @@ class NumberCellBloc extends Bloc<NumberCellEvent, NumberCellState> {
 }
 
 @freezed
-class NumberCellEvent with _$NumberCellEvent {
+abstract class NumberCellEvent with _$NumberCellEvent {
   const factory NumberCellEvent.didReceiveCellUpdate(String? cellContent) =
       _DidReceiveCellUpdate;
   const factory NumberCellEvent.didUpdateField(FieldInfo fieldInfo) =
@@ -82,7 +82,7 @@ class NumberCellEvent with _$NumberCellEvent {
 }
 
 @freezed
-class NumberCellState with _$NumberCellState {
+abstract class NumberCellState with _$NumberCellState {
   const factory NumberCellState({
     required String content,
     required bool wrap,

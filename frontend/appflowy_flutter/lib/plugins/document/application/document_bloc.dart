@@ -451,7 +451,7 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
 }
 
 @freezed
-class DocumentEvent with _$DocumentEvent {
+abstract class DocumentEvent with _$DocumentEvent {
   const factory DocumentEvent.initial() = Initial;
   const factory DocumentEvent.moveToTrash() = MoveToTrash;
   const factory DocumentEvent.restore() = Restore;
@@ -465,7 +465,7 @@ class DocumentEvent with _$DocumentEvent {
 }
 
 @freezed
-class DocumentState with _$DocumentState {
+abstract class DocumentState with _$DocumentState {
   const factory DocumentState({
     required final bool isDeleted,
     required final bool forceClose,

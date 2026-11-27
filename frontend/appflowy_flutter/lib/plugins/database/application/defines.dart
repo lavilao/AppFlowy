@@ -34,7 +34,7 @@ typedef OnRowsVisibilityChanged = void Function(
 );
 
 @freezed
-class LoadingState with _$LoadingState {
+abstract class LoadingState with _$LoadingState {
   const factory LoadingState.idle() = _Idle;
   const factory LoadingState.loading() = _Loading;
   const factory LoadingState.finish(

@@ -4,7 +4,7 @@ part 'error.freezed.dart';
 part 'error.g.dart';
 
 @freezed
-class AIError with _$AIError {
+abstract class AIError with _$AIError {
   const factory AIError({
     required String message,
     required AIErrorCode code,

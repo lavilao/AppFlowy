@@ -149,7 +149,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 }
 
 @freezed
-class SignUpEvent with _$SignUpEvent {
+abstract class SignUpEvent with _$SignUpEvent {
   const factory SignUpEvent.signUpWithUserEmailAndPassword() =
       SignUpWithUserEmailAndPassword;
   const factory SignUpEvent.emailChanged(String email) = _EmailChanged;
@@ -159,7 +159,7 @@ class SignUpEvent with _$SignUpEvent {
 }
 
 @freezed
-class SignUpState with _$SignUpState {
+abstract class SignUpState with _$SignUpState {
   const factory SignUpState({
     String? email,
     String? password,

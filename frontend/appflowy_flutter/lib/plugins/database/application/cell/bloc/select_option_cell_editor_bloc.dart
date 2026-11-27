@@ -349,7 +349,7 @@ class SelectOptionCellEditorBloc
 }
 
 @freezed
-class SelectOptionCellEditorEvent with _$SelectOptionCellEditorEvent {
+abstract class SelectOptionCellEditorEvent with _$SelectOptionCellEditorEvent {
   const factory SelectOptionCellEditorEvent.didUpdateCell(
     List<SelectOptionPB> selectedOptions,
   ) = _DidUpdateCell;
@@ -395,7 +395,7 @@ class SelectOptionCellEditorEvent with _$SelectOptionCellEditorEvent {
 }
 
 @freezed
-class SelectOptionCellEditorState with _$SelectOptionCellEditorState {
+abstract class SelectOptionCellEditorState with _$SelectOptionCellEditorState {
   const factory SelectOptionCellEditorState({
     required List<SelectOptionPB> options,
     required List<SelectOptionPB> selectedOptions,

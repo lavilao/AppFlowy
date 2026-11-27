@@ -170,7 +170,7 @@ class ChatAIMessageBloc extends Bloc<ChatAIMessageEvent, ChatAIMessageState> {
 }
 
 @freezed
-class ChatAIMessageEvent with _$ChatAIMessageEvent {
+abstract class ChatAIMessageEvent with _$ChatAIMessageEvent {
   const factory ChatAIMessageEvent.updateText(String text) = _UpdateText;
   const factory ChatAIMessageEvent.receiveError(String error) = _ReceiveError;
   const factory ChatAIMessageEvent.retry() = _Retry;
@@ -191,7 +191,7 @@ class ChatAIMessageEvent with _$ChatAIMessageEvent {
 }
 
 @freezed
-class ChatAIMessageState with _$ChatAIMessageState {
+abstract class ChatAIMessageState with _$ChatAIMessageState {
   const factory ChatAIMessageState({
     AnswerStream? stream,
     required String text,
@@ -215,7 +215,7 @@ class ChatAIMessageState with _$ChatAIMessageState {
 }
 
 @freezed
-class MessageState with _$MessageState {
+abstract class MessageState with _$MessageState {
   const factory MessageState.onError(String error) = _Error;
   const factory MessageState.onAIResponseLimit() = _AIResponseLimit;
   const factory MessageState.onAIImageResponseLimit() = _AIImageResponseLimit;

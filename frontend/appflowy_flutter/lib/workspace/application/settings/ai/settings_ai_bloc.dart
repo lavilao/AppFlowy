@@ -158,7 +158,7 @@ class SettingsAIBloc extends Bloc<SettingsAIEvent, SettingsAIState> {
 }
 
 @freezed
-class SettingsAIEvent with _$SettingsAIEvent {
+abstract class SettingsAIEvent with _$SettingsAIEvent {
   const factory SettingsAIEvent.started() = _Started;
   const factory SettingsAIEvent.didLoadWorkspaceSetting(
     WorkspaceSettingsPB settings,
@@ -178,7 +178,7 @@ class SettingsAIEvent with _$SettingsAIEvent {
 }
 
 @freezed
-class SettingsAIState with _$SettingsAIState {
+abstract class SettingsAIState with _$SettingsAIState {
   const factory SettingsAIState({
     required UserProfilePB userProfile,
     WorkspaceSettingsPB? aiSettings,

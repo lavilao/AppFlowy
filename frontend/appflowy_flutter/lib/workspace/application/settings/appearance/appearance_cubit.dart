@@ -377,7 +377,7 @@ enum AppFlowyTextDirection {
 }
 
 @freezed
-class AppearanceSettingsState with _$AppearanceSettingsState {
+abstract class AppearanceSettingsState with _$AppearanceSettingsState {
   const AppearanceSettingsState._();
 
   const factory AppearanceSettingsState({

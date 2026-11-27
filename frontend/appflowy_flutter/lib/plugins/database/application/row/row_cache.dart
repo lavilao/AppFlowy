@@ -367,7 +367,7 @@ typedef DeletedIndexs = List<DeletedIndex>;
 typedef UpdatedIndexMap = LinkedHashMap<RowId, UpdatedIndex>;
 
 @freezed
-class ChangedReason with _$ChangedReason {
+abstract class ChangedReason with _$ChangedReason {
   const factory ChangedReason.insert(InsertedIndexs items) = _Insert;
   const factory ChangedReason.delete(DeletedIndex item) = _Delete;
   const factory ChangedReason.update(UpdatedIndexMap indexs) = _Update;

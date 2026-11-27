@@ -9,7 +9,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'settings_shortcuts_cubit.freezed.dart';
 
 @freezed
-class ShortcutsState with _$ShortcutsState {
+abstract class ShortcutsState with _$ShortcutsState {
   const factory ShortcutsState({
     @Default(<CommandShortcutEvent>[])
     List<CommandShortcutEvent> commandShortcutEvents,

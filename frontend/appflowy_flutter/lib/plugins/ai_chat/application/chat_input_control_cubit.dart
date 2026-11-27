@@ -232,7 +232,7 @@ class ChatInputControlCubit extends Cubit<ChatInputControlState> {
 }
 
 @freezed
-class ChatInputControlState with _$ChatInputControlState {
+abstract class ChatInputControlState with _$ChatInputControlState {
   const factory ChatInputControlState.loading() = _Loading;
 
   const factory ChatInputControlState.ready({

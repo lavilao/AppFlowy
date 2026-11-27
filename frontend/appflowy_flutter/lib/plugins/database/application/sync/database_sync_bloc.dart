@@ -88,7 +88,7 @@ class DatabaseSyncBloc extends Bloc<DatabaseSyncEvent, DatabaseSyncBlocState> {
 }
 
 @freezed
-class DatabaseSyncEvent with _$DatabaseSyncEvent {
+abstract class DatabaseSyncEvent with _$DatabaseSyncEvent {
   const factory DatabaseSyncEvent.initial() = Initial;
   const factory DatabaseSyncEvent.syncStateChanged(
     DatabaseSyncStatePB syncState,
@@ -99,7 +99,7 @@ class DatabaseSyncEvent with _$DatabaseSyncEvent {
 }
 
 @freezed
-class DatabaseSyncBlocState with _$DatabaseSyncBlocState {
+abstract class DatabaseSyncBlocState with _$DatabaseSyncBlocState {
   const factory DatabaseSyncBlocState({
     required DatabaseSyncState syncState,
     @Default(true) bool isNetworkConnected,

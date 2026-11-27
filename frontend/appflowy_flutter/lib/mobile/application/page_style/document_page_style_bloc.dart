@@ -213,7 +213,7 @@ class DocumentPageStyleBloc
 }
 
 @freezed
-class DocumentPageStyleEvent with _$DocumentPageStyleEvent {
+abstract class DocumentPageStyleEvent with _$DocumentPageStyleEvent {
   const factory DocumentPageStyleEvent.initial() = Initial;
   const factory DocumentPageStyleEvent.updateFont(
     PageStyleFontLayout fontLayout,
@@ -230,7 +230,7 @@ class DocumentPageStyleEvent with _$DocumentPageStyleEvent {
 }
 
 @freezed
-class DocumentPageStyleState with _$DocumentPageStyleState {
+abstract class DocumentPageStyleState with _$DocumentPageStyleState {
   const factory DocumentPageStyleState({
     @Default(PageStyleFontLayout.normal) PageStyleFontLayout fontLayout,
     @Default(PageStyleLineHeightLayout.normal)

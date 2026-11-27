@@ -160,7 +160,7 @@ class FieldEditorBloc extends Bloc<FieldEditorEvent, FieldEditorState> {
 }
 
 @freezed
-class FieldEditorEvent with _$FieldEditorEvent {
+abstract class FieldEditorEvent with _$FieldEditorEvent {
   const factory FieldEditorEvent.didUpdateField(final FieldInfo fieldInfo) =
       _DidUpdateField;
   const factory FieldEditorEvent.switchFieldType(final FieldType fieldType) =
@@ -179,7 +179,7 @@ class FieldEditorEvent with _$FieldEditorEvent {
 }
 
 @freezed
-class FieldEditorState with _$FieldEditorState {
+abstract class FieldEditorState with _$FieldEditorState {
   const factory FieldEditorState({
     required final FieldInfo field,
     @Default(false) bool wasRenameManually,

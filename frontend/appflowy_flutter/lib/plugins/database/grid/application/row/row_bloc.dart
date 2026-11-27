@@ -90,7 +90,7 @@ class RowBloc extends Bloc<RowEvent, RowState> {
 }
 
 @freezed
-class RowEvent with _$RowEvent {
+abstract class RowEvent with _$RowEvent {
   const factory RowEvent.createRow() = _CreateRow;
   const factory RowEvent.didReceiveCells(
     List<CellContext> cellsByFieldId,
@@ -99,7 +99,7 @@ class RowEvent with _$RowEvent {
 }
 
 @freezed
-class RowState with _$RowState {
+abstract class RowState with _$RowState {
   const factory RowState({
     required List<CellContext> cellContexts,
     ChangedReason? changeReason,

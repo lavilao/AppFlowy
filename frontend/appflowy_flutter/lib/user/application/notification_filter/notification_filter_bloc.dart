@@ -18,7 +18,7 @@ class NotificationFilterBloc
 }
 
 @freezed
-class NotificationFilterEvent with _$NotificationFilterEvent {
+abstract class NotificationFilterEvent with _$NotificationFilterEvent {
   const factory NotificationFilterEvent.toggleShowUnreadsOnly() =
       _ToggleShowUnreadsOnly;
 
@@ -26,7 +26,7 @@ class NotificationFilterEvent with _$NotificationFilterEvent {
 }
 
 @freezed
-class NotificationFilterState with _$NotificationFilterState {
+abstract class NotificationFilterState with _$NotificationFilterState {
   const NotificationFilterState._();
 
   const factory NotificationFilterState({

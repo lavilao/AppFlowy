@@ -263,7 +263,7 @@ class SettingsBillingBloc
 }
 
 @freezed
-class SettingsBillingEvent with _$SettingsBillingEvent {
+abstract class SettingsBillingEvent with _$SettingsBillingEvent {
   const factory SettingsBillingEvent.started() = _Started;
 
   const factory SettingsBillingEvent.billingPortalFetched({
@@ -291,7 +291,7 @@ class SettingsBillingEvent with _$SettingsBillingEvent {
 }
 
 @freezed
-class SettingsBillingState extends Equatable with _$SettingsBillingState {
+abstract class SettingsBillingState extends Equatable with _$SettingsBillingState {
   const SettingsBillingState._();
 
   const factory SettingsBillingState.initial() = _Initial;

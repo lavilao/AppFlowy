@@ -69,7 +69,7 @@ class DocumentImmersiveCoverBloc
 }
 
 @freezed
-class DocumentImmersiveCoverEvent with _$DocumentImmersiveCoverEvent {
+abstract class DocumentImmersiveCoverEvent with _$DocumentImmersiveCoverEvent {
   const factory DocumentImmersiveCoverEvent.initial() = Initial;
 
   const factory DocumentImmersiveCoverEvent.updateCoverAndIcon(
@@ -80,7 +80,7 @@ class DocumentImmersiveCoverEvent with _$DocumentImmersiveCoverEvent {
 }
 
 @freezed
-class DocumentImmersiveCoverState with _$DocumentImmersiveCoverState {
+abstract class DocumentImmersiveCoverState with _$DocumentImmersiveCoverState {
   const factory DocumentImmersiveCoverState({
     @Default(null) EmojiIconData? icon,
     required PageStyleCover cover,

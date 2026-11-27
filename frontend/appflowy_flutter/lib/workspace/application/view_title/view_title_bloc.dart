@@ -61,7 +61,7 @@ class ViewTitleBloc extends Bloc<ViewTitleEvent, ViewTitleState> {
 }
 
 @freezed
-class ViewTitleEvent with _$ViewTitleEvent {
+abstract class ViewTitleEvent with _$ViewTitleEvent {
   const factory ViewTitleEvent.initial() = Initial;
 
   const factory ViewTitleEvent.updateNameOrIcon(
@@ -72,7 +72,7 @@ class ViewTitleEvent with _$ViewTitleEvent {
 }
 
 @freezed
-class ViewTitleState with _$ViewTitleState {
+abstract class ViewTitleState with _$ViewTitleState {
   const factory ViewTitleState({
     required String name,
     required EmojiIconData icon,

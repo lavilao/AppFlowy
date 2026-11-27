@@ -561,7 +561,7 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
 }
 
 @freezed
-class ReminderEvent with _$ReminderEvent {
+abstract class ReminderEvent with _$ReminderEvent {
   // On startup we fetch all reminders and upcoming ones
   const factory ReminderEvent.started() = _Started;
 

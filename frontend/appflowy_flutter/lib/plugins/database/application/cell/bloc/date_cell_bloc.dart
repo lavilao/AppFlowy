@@ -76,7 +76,7 @@ class DateCellBloc extends Bloc<DateCellEvent, DateCellState> {
 }
 
 @freezed
-class DateCellEvent with _$DateCellEvent {
+abstract class DateCellEvent with _$DateCellEvent {
   const factory DateCellEvent.didReceiveCellUpdate(DateCellDataPB? data) =
       _DidReceiveCellUpdate;
   const factory DateCellEvent.didUpdateField(FieldInfo fieldInfo) =
@@ -84,7 +84,7 @@ class DateCellEvent with _$DateCellEvent {
 }
 
 @freezed
-class DateCellState with _$DateCellState {
+abstract class DateCellState with _$DateCellState {
   const factory DateCellState({
     required FieldInfo fieldInfo,
     required DateCellData cellData,

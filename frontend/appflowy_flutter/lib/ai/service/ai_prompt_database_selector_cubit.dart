@@ -146,7 +146,7 @@ class AiPromptDatabaseSelectorCubit
 }
 
 @freezed
-class AiPromptDatabaseSelectorState with _$AiPromptDatabaseSelectorState {
+abstract class AiPromptDatabaseSelectorState with _$AiPromptDatabaseSelectorState {
   const factory AiPromptDatabaseSelectorState.loading() = _Loading;
 
   const factory AiPromptDatabaseSelectorState.empty() = _Empty;

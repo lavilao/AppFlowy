@@ -76,7 +76,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
 }
 
 @freezed
-class FolderEvent with _$FolderEvent {
+abstract class FolderEvent with _$FolderEvent {
   const factory FolderEvent.initial() = Initial;
   const factory FolderEvent.expandOrUnExpand({
     bool? isExpanded,
@@ -84,7 +84,7 @@ class FolderEvent with _$FolderEvent {
 }
 
 @freezed
-class FolderState with _$FolderState {
+abstract class FolderState with _$FolderState {
   const factory FolderState({
     required FolderSpaceType type,
     required bool isExpanded,

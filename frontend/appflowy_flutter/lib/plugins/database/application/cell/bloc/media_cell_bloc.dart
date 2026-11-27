@@ -188,7 +188,7 @@ class MediaCellBloc extends Bloc<MediaCellEvent, MediaCellState> {
 }
 
 @freezed
-class MediaCellEvent with _$MediaCellEvent {
+abstract class MediaCellEvent with _$MediaCellEvent {
   const factory MediaCellEvent.initial() = _Initial;
 
   const factory MediaCellEvent.didUpdateCell(List<MediaFilePB> files) =
@@ -224,7 +224,7 @@ class MediaCellEvent with _$MediaCellEvent {
 }
 
 @freezed
-class MediaCellState with _$MediaCellState {
+abstract class MediaCellState with _$MediaCellState {
   const factory MediaCellState({
     UserProfilePB? userProfile,
     required String fieldName,

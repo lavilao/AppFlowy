@@ -492,6 +492,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  cupertino_ui:
+    dependency: transitive
+    description:
+      name: cupertino_ui
+      sha256: c3eaf7f5bdfee36deb0b14a4cbf7602f1b6b8d8b8576b81f38fc08c25881c94c
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.7"
   dart_style:
     dependency: transitive
     description:
@@ -648,10 +656,10 @@ packages:
     dependency: "direct main"
     description:
       name: extended_text_field
-      sha256: "3996195c117c6beb734026a7bc0ba80d7e4e84e4edd4728caa544d8209ab4d7d"
+      sha256: "495b8cc6b4a66b5323d71afe1df1c5f08b716fdc925e4339aeaa14a2f0cf65a9"
       url: "https://pub.dev"
     source: hosted
-    version: "16.0.2"
+    version: "17.0.0"
   extended_text_library:
     dependency: "direct main"
     description:
@@ -885,10 +893,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_math_fork
-      sha256: "284bab89b2fbf1bc3a0baf13d011c1dd324d004e35d177626b77f2fc056366ac"
+      sha256: "6d5f2f1aa57ae539ffb0a04bb39d2da67af74601d685a161aff7ce5bda5fa407"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.3"
+    version: "0.7.4"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -925,10 +933,10 @@ packages:
     dependency: "direct overridden"
     description:
       name: flutter_sticky_header
-      sha256: "7f76d24d119424ca0c95c146b8627a457e8de8169b0d584f766c2c545db8f8be"
+      sha256: "62fe8f8602d294617c5a2ea91b0d9fcdb011747e73481182ffbff3ff8acef7b7"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.0"
+    version: "0.11.0"
   flutter_svg:
     dependency: transitive
     description:
@@ -1020,10 +1028,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
+      sha256: fdbbfbbb1a62f376ab29fa9627561d389751fb984da0b630ce3326e272911c8a
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.1"
+    version: "9.0.0"
   google_mlkit_commons:
     dependency: "direct main"
     description:
@@ -1413,6 +1421,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.0"
+  material_ui:
+    dependency: transitive
+    description:
+      name: material_ui
+      sha256: a6b19012df437a356cbc01f8ea22a105e07194c47c9a6009da0032a0ce35c4ab
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.11.1"
   meta:
     dependency: transitive
     description:
@@ -2483,10 +2499,10 @@ packages:
     dependency: transitive
     description:
       name: value_layout_builder
-      sha256: c02511ea91ca5c643b514a33a38fa52536f74aa939ec367d02938b5ede6807fa
+      sha256: ab4b7d98bac8cefeb9713154d43ee0477490183f5aa23bb4ffa5103d9bbf6275
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0"
+    version: "0.5.0"
   vector_graphics:
     dependency: transitive
     description:

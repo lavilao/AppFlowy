@@ -307,7 +307,7 @@ class SettingsSitesBloc extends Bloc<SettingsSitesEvent, SettingsSitesState> {
 }
 
 @freezed
-class SettingsSitesState with _$SettingsSitesState {
+abstract class SettingsSitesState with _$SettingsSitesState {
   const factory SettingsSitesState({
     @Default([]) List<PublishInfoViewPB> publishedViews,
     SettingsSitesActionResult? actionResult,
@@ -321,7 +321,7 @@ class SettingsSitesState with _$SettingsSitesState {
 }
 
 @freezed
-class SettingsSitesEvent with _$SettingsSitesEvent {
+abstract class SettingsSitesEvent with _$SettingsSitesEvent {
   const factory SettingsSitesEvent.initial() = _Initial;
   const factory SettingsSitesEvent.unpublishView(String viewId) =
       _UnpublishView;

@@ -57,7 +57,7 @@ class SelectOptionTypeOptionBloc
 }
 
 @freezed
-class SelectOptionTypeOptionEvent with _$SelectOptionTypeOptionEvent {
+abstract class SelectOptionTypeOptionEvent with _$SelectOptionTypeOptionEvent {
   const factory SelectOptionTypeOptionEvent.createOption(String optionName) =
       _CreateOption;
   const factory SelectOptionTypeOptionEvent.addingOption() = _AddingOption;
@@ -76,7 +76,7 @@ class SelectOptionTypeOptionEvent with _$SelectOptionTypeOptionEvent {
 }
 
 @freezed
-class SelectOptionTypeOptionState with _$SelectOptionTypeOptionState {
+abstract class SelectOptionTypeOptionState with _$SelectOptionTypeOptionState {
   const factory SelectOptionTypeOptionState({
     required List<SelectOptionPB> options,
     required bool isEditingOption,

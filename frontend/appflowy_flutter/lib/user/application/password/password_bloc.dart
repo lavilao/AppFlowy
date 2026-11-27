@@ -193,7 +193,7 @@ class PasswordBloc extends Bloc<PasswordEvent, PasswordState> {
 }
 
 @freezed
-class PasswordEvent with _$PasswordEvent {
+abstract class PasswordEvent with _$PasswordEvent {
   const factory PasswordEvent.init() = Init;
 
   // Change password
@@ -220,7 +220,7 @@ class PasswordEvent with _$PasswordEvent {
 }
 
 @freezed
-class PasswordState with _$PasswordState {
+abstract class PasswordState with _$PasswordState {
   const factory PasswordState({
     required bool isSubmitting,
     required bool hasPassword,

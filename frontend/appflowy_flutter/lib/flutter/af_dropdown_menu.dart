@@ -64,7 +64,7 @@ class AFDropdownMenu<T> extends StatefulWidget {
   /// in the [InputDecoration.prefixIcon] and [InputDecoration.suffixIcon].
   ///
   /// Except leading and trailing icons, the text field can be configured by the
-  /// [InputDecorationTheme] property. The menu can be configured by the [menuStyle].
+  /// [InputDecorationThemeData] property. The menu can be configured by the [menuStyle].
   const AFDropdownMenu({
     super.key,
     this.enabled = true,
@@ -185,7 +185,7 @@ class AFDropdownMenu<T> extends StatefulWidget {
   /// Defines the default appearance of [InputDecoration] to show around the text field.
   ///
   /// By default, shows a outlined text field.
-  final InputDecorationTheme? inputDecorationTheme;
+  final InputDecorationThemeData? inputDecorationTheme;
 
   /// The [MenuStyle] that defines the visual attributes of the menu.
   ///
@@ -666,7 +666,7 @@ class _AFDropdownMenuState<T> extends State<AFDropdownMenu<T>> {
         ),
       );
     }
-    final InputDecorationTheme effectiveInputDecorationTheme =
+    final InputDecorationThemeData effectiveInputDecorationThemeData =
         widget.inputDecorationTheme ??
             theme.inputDecorationTheme ??
             defaults.inputDecorationTheme!;
@@ -752,7 +752,7 @@ class _AFDropdownMenuState<T> extends State<AFDropdownMenu<T>> {
                 ? Container(key: _leadingKey, child: widget.leadingIcon)
                 : null,
             suffixIcon: trailingButton,
-          ).applyDefaults(effectiveInputDecorationTheme),
+          ).applyDefaults(effectiveInputDecorationThemeData),
         );
 
         if (widget.expandedInsets != null) {
@@ -1059,7 +1059,7 @@ class _DropdownMenuDefaultsM3 extends DropdownMenuThemeData {
   }
 
   @override
-  InputDecorationTheme get inputDecorationTheme {
-    return const InputDecorationTheme(border: OutlineInputBorder());
+  InputDecorationThemeData get inputDecorationTheme {
+    return const InputDecorationThemeData(border: OutlineInputBorder());
   }
 }

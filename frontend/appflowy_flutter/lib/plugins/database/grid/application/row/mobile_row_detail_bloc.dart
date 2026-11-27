@@ -97,7 +97,7 @@ class MobileRowDetailBloc
 }
 
 @freezed
-class MobileRowDetailEvent with _$MobileRowDetailEvent {
+abstract class MobileRowDetailEvent with _$MobileRowDetailEvent {
   const factory MobileRowDetailEvent.initial(String rowId) = _Initial;
   const factory MobileRowDetailEvent.didLoadRows(List<RowInfo> rows) =
       _DidLoadRows;
@@ -106,7 +106,7 @@ class MobileRowDetailEvent with _$MobileRowDetailEvent {
 }
 
 @freezed
-class MobileRowDetailState with _$MobileRowDetailState {
+abstract class MobileRowDetailState with _$MobileRowDetailState {
   const factory MobileRowDetailState({
     required bool isLoading,
     required String? currentRowId,

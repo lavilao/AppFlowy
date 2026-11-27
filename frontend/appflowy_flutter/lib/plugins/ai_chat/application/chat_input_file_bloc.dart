@@ -23,21 +23,21 @@ class ChatInputFileBloc extends Bloc<ChatInputFileEvent, ChatInputFileState> {
 }
 
 @freezed
-class ChatInputFileEvent with _$ChatInputFileEvent {
+abstract class ChatInputFileEvent with _$ChatInputFileEvent {
   const factory ChatInputFileEvent.updateUploadState(
     UploadFileIndicator indicator,
   ) = _UpdateUploadState;
 }
 
 @freezed
-class ChatInputFileState with _$ChatInputFileState {
+abstract class ChatInputFileState with _$ChatInputFileState {
   const factory ChatInputFileState({
     UploadFileIndicator? uploadFileIndicator,
   }) = _ChatInputFileState;
 }
 
 @freezed
-class UploadFileIndicator with _$UploadFileIndicator {
+abstract class UploadFileIndicator with _$UploadFileIndicator {
   const factory UploadFileIndicator.finish() = _Finish;
   const factory UploadFileIndicator.uploading() = _Uploading;
   const factory UploadFileIndicator.error(String error) = _Error;

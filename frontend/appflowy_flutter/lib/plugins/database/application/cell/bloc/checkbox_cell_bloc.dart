@@ -68,7 +68,7 @@ class CheckboxCellBloc extends Bloc<CheckboxCellEvent, CheckboxCellState> {
 }
 
 @freezed
-class CheckboxCellEvent with _$CheckboxCellEvent {
+abstract class CheckboxCellEvent with _$CheckboxCellEvent {
   const factory CheckboxCellEvent.initial() = _Initial;
   const factory CheckboxCellEvent.select() = _Selected;
   const factory CheckboxCellEvent.didUpdateCell(bool isSelected) =
@@ -78,7 +78,7 @@ class CheckboxCellEvent with _$CheckboxCellEvent {
 }
 
 @freezed
-class CheckboxCellState with _$CheckboxCellState {
+abstract class CheckboxCellState with _$CheckboxCellState {
   const factory CheckboxCellState({
     required bool isSelected,
     required String fieldName,

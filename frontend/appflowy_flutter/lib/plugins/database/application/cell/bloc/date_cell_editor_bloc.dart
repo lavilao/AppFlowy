@@ -333,7 +333,7 @@ class DateCellEditorBloc
 }
 
 @freezed
-class DateCellEditorEvent with _$DateCellEditorEvent {
+abstract class DateCellEditorEvent with _$DateCellEditorEvent {
   const factory DateCellEditorEvent.didUpdateField(
     FieldInfo fieldInfo,
   ) = _DidUpdateField;
@@ -377,7 +377,7 @@ class DateCellEditorEvent with _$DateCellEditorEvent {
 }
 
 @freezed
-class DateCellEditorState with _$DateCellEditorState {
+abstract class DateCellEditorState with _$DateCellEditorState {
   const factory DateCellEditorState({
     // the date field's type option
     required DateTypeOptionPB dateTypeOptionPB,

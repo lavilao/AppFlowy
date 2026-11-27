@@ -40,13 +40,13 @@ class FavoritePinBloc extends Bloc<FavoritePinEvent, FavoritePinState> {
 }
 
 @freezed
-class FavoritePinEvent with _$FavoritePinEvent {
+abstract class FavoritePinEvent with _$FavoritePinEvent {
   const factory FavoritePinEvent.initial() = Initial;
   const factory FavoritePinEvent.search(String query) = Search;
 }
 
 @freezed
-class FavoritePinState with _$FavoritePinState {
+abstract class FavoritePinState with _$FavoritePinState {
   const factory FavoritePinState({
     @Default([]) List<ViewPB> views,
     @Default([]) List<ViewPB> queriedViews,

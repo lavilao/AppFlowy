@@ -455,7 +455,7 @@ class ViewBloc extends Bloc<ViewEvent, ViewState> {
 }
 
 @freezed
-class ViewEvent with _$ViewEvent {
+abstract class ViewEvent with _$ViewEvent {
   const factory ViewEvent.initial() = Initial;
 
   const factory ViewEvent.setIsEditing(bool isEditing) = SetEditing;
@@ -505,7 +505,7 @@ class ViewEvent with _$ViewEvent {
 }
 
 @freezed
-class ViewState with _$ViewState {
+abstract class ViewState with _$ViewState {
   const factory ViewState({
     required ViewPB view,
     required bool isEditing,

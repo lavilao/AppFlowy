@@ -58,7 +58,7 @@ class ActionNavigationBloc
 }
 
 @freezed
-class ActionNavigationEvent with _$ActionNavigationEvent {
+abstract class ActionNavigationEvent with _$ActionNavigationEvent {
   const factory ActionNavigationEvent.performAction({
     required NavigationAction action,
     @Default(false) bool showErrorToast,

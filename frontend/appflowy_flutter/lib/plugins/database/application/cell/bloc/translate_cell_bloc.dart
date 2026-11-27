@@ -86,7 +86,7 @@ class TranslateCellBloc extends Bloc<TranslateCellEvent, TranslateCellState> {
 }
 
 @freezed
-class TranslateCellEvent with _$TranslateCellEvent {
+abstract class TranslateCellEvent with _$TranslateCellEvent {
   const factory TranslateCellEvent.didReceiveCellUpdate(String? cellContent) =
       _DidReceiveCellUpdate;
   const factory TranslateCellEvent.didUpdateField(FieldInfo fieldInfo) =
@@ -95,7 +95,7 @@ class TranslateCellEvent with _$TranslateCellEvent {
 }
 
 @freezed
-class TranslateCellState with _$TranslateCellState {
+abstract class TranslateCellState with _$TranslateCellState {
   const factory TranslateCellState({
     required String content,
     required bool wrap,

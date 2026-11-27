@@ -103,7 +103,7 @@ class DatabaseGroupBloc extends Bloc<DatabaseGroupEvent, DatabaseGroupState> {
 }
 
 @freezed
-class DatabaseGroupEvent with _$DatabaseGroupEvent {
+abstract class DatabaseGroupEvent with _$DatabaseGroupEvent {
   const factory DatabaseGroupEvent.initial() = _Initial;
   const factory DatabaseGroupEvent.setGroupByField(
     String fieldId,
@@ -119,7 +119,7 @@ class DatabaseGroupEvent with _$DatabaseGroupEvent {
 }
 
 @freezed
-class DatabaseGroupState with _$DatabaseGroupState {
+abstract class DatabaseGroupState with _$DatabaseGroupState {
   const factory DatabaseGroupState({
     required String viewId,
     required List<FieldInfo> fieldInfos,

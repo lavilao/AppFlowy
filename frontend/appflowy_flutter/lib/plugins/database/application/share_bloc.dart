@@ -54,12 +54,12 @@ class DatabaseShareBloc extends Bloc<DatabaseShareEvent, DatabaseShareState> {
 }
 
 @freezed
-class DatabaseShareEvent with _$DatabaseShareEvent {
+abstract class DatabaseShareEvent with _$DatabaseShareEvent {
   const factory DatabaseShareEvent.shareCSV(String path) = ShareCSV;
 }
 
 @freezed
-class DatabaseShareState with _$DatabaseShareState {
+abstract class DatabaseShareState with _$DatabaseShareState {
   const factory DatabaseShareState.initial() = _Initial;
   const factory DatabaseShareState.loading() = _Loading;
   const factory DatabaseShareState.finish(

@@ -98,7 +98,7 @@ class GridHeaderBloc extends Bloc<GridHeaderEvent, GridHeaderState> {
 }
 
 @freezed
-class GridHeaderEvent with _$GridHeaderEvent {
+abstract class GridHeaderEvent with _$GridHeaderEvent {
   const factory GridHeaderEvent.initial() = _InitialHeader;
   const factory GridHeaderEvent.didReceiveFieldUpdate(List<FieldInfo> fields) =
       _DidReceiveFieldUpdate;
@@ -114,7 +114,7 @@ class GridHeaderEvent with _$GridHeaderEvent {
 }
 
 @freezed
-class GridHeaderState with _$GridHeaderState {
+abstract class GridHeaderState with _$GridHeaderState {
   const factory GridHeaderState({
     required List<FieldInfo> fields,
     required String? editingFieldId,

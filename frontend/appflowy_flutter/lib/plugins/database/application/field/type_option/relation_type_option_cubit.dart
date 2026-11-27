@@ -38,7 +38,7 @@ class RelationDatabaseListCubit extends Cubit<RelationDatabaseListState> {
 }
 
 @freezed
-class DatabaseMeta with _$DatabaseMeta {
+abstract class DatabaseMeta with _$DatabaseMeta {
   factory DatabaseMeta({
     /// id of the database
     required String databaseId,
@@ -52,7 +52,7 @@ class DatabaseMeta with _$DatabaseMeta {
 }
 
 @freezed
-class RelationDatabaseListState with _$RelationDatabaseListState {
+abstract class RelationDatabaseListState with _$RelationDatabaseListState {
   factory RelationDatabaseListState({
     required List<DatabaseMeta> databaseMetas,
   }) = _RelationDatabaseListState;

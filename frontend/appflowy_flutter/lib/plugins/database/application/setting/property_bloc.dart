@@ -94,7 +94,7 @@ class DatabasePropertyBloc
 }
 
 @freezed
-class DatabasePropertyEvent with _$DatabasePropertyEvent {
+abstract class DatabasePropertyEvent with _$DatabasePropertyEvent {
   const factory DatabasePropertyEvent.initial() = _Initial;
   const factory DatabasePropertyEvent.setFieldVisibility(
     String fieldId,
@@ -108,7 +108,7 @@ class DatabasePropertyEvent with _$DatabasePropertyEvent {
 }
 
 @freezed
-class DatabasePropertyState with _$DatabasePropertyState {
+abstract class DatabasePropertyState with _$DatabasePropertyState {
   const factory DatabasePropertyState({
     required String viewId,
     required List<FieldInfo> fieldContexts,

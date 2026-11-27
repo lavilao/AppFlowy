@@ -25,12 +25,12 @@ class RenameViewBloc extends Bloc<RenameViewEvent, RenameViewState> {
 }
 
 @freezed
-class RenameViewEvent with _$RenameViewEvent {
+abstract class RenameViewEvent with _$RenameViewEvent {
   const factory RenameViewEvent.open() = _Open;
 }
 
 @freezed
-class RenameViewState with _$RenameViewState {
+abstract class RenameViewState with _$RenameViewState {
   const factory RenameViewState({
     required PopoverController controller,
   }) = _RenameViewState;

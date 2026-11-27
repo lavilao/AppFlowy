@@ -5,7 +5,7 @@ part 'document_awareness_metadata.freezed.dart';
 part 'document_awareness_metadata.g.dart';
 
 @freezed
-class DocumentAwarenessMetadata with _$DocumentAwarenessMetadata {
+abstract class DocumentAwarenessMetadata with _$DocumentAwarenessMetadata {
   const factory DocumentAwarenessMetadata({
     // ignore: invalid_annotation_target
     @JsonKey(name: 'cursor_color') required String cursorColor,

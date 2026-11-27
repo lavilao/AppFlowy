@@ -113,7 +113,7 @@ typedef ChatFileMap = Map<String, ChatFile>;
 typedef ChatMentionedPageMap = Map<String, ViewPB>;
 
 @freezed
-class ChatLoadingState with _$ChatLoadingState {
+abstract class ChatLoadingState with _$ChatLoadingState {
   const factory ChatLoadingState.loading() = _Loading;
   const factory ChatLoadingState.finish({FlowyError? error}) = _Finish;
 }

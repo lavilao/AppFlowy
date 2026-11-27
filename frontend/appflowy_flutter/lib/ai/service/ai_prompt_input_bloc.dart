@@ -139,7 +139,7 @@ class AIPromptInputBloc extends Bloc<AIPromptInputEvent, AIPromptInputState> {
 }
 
 @freezed
-class AIPromptInputEvent with _$AIPromptInputEvent {
+abstract class AIPromptInputEvent with _$AIPromptInputEvent {
   const factory AIPromptInputEvent.updateAIState(
     AIModelState modelState,
   ) = _UpdateAIState;
@@ -162,7 +162,7 @@ class AIPromptInputEvent with _$AIPromptInputEvent {
 }
 
 @freezed
-class AIPromptInputState with _$AIPromptInputState {
+abstract class AIPromptInputState with _$AIPromptInputState {
   const factory AIPromptInputState({
     required AIModelState modelState,
     required bool supportChatWithFile,

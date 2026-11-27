@@ -149,7 +149,7 @@ class UnscheduleEventsBloc
 }
 
 @freezed
-class UnscheduleEventsEvent with _$UnscheduleEventsEvent {
+abstract class UnscheduleEventsEvent with _$UnscheduleEventsEvent {
   const factory UnscheduleEventsEvent.initial() = _InitialCalendar;
 
   // Called after loading all the current evnets
@@ -166,7 +166,7 @@ class UnscheduleEventsEvent with _$UnscheduleEventsEvent {
 }
 
 @freezed
-class UnscheduleEventsState with _$UnscheduleEventsState {
+abstract class UnscheduleEventsState with _$UnscheduleEventsState {
   const factory UnscheduleEventsState({
     required DatabasePB? database,
     required List<CalendarEventPB> allEvents,

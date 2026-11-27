@@ -86,7 +86,7 @@ class SummaryCellBloc extends Bloc<SummaryCellEvent, SummaryCellState> {
 }
 
 @freezed
-class SummaryCellEvent with _$SummaryCellEvent {
+abstract class SummaryCellEvent with _$SummaryCellEvent {
   const factory SummaryCellEvent.didReceiveCellUpdate(String? cellContent) =
       _DidReceiveCellUpdate;
   const factory SummaryCellEvent.didUpdateField(FieldInfo fieldInfo) =
@@ -95,7 +95,7 @@ class SummaryCellEvent with _$SummaryCellEvent {
 }
 
 @freezed
-class SummaryCellState with _$SummaryCellState {
+abstract class SummaryCellState with _$SummaryCellState {
   const factory SummaryCellState({
     required String content,
     required bool wrap,

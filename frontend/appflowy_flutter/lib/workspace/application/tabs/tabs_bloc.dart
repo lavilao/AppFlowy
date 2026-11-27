@@ -304,7 +304,7 @@ class TabsBloc extends Bloc<TabsEvent, TabsState> {
 }
 
 @freezed
-class TabsEvent with _$TabsEvent {
+abstract class TabsEvent with _$TabsEvent {
   const factory TabsEvent.moveTab() = _MoveTab;
 
   const factory TabsEvent.closeTab(String pluginId) = _CloseTab;

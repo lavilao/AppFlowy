@@ -171,7 +171,7 @@ class RelationCellBloc extends Bloc<RelationCellEvent, RelationCellState> {
 }
 
 @freezed
-class RelationCellEvent with _$RelationCellEvent {
+abstract class RelationCellEvent with _$RelationCellEvent {
   const factory RelationCellEvent.didUpdateCell(RelationCellDataPB? data) =
       _DidUpdateCell;
   const factory RelationCellEvent.didUpdateField(FieldInfo fieldInfo) =
@@ -183,7 +183,7 @@ class RelationCellEvent with _$RelationCellEvent {
 }
 
 @freezed
-class RelationCellState with _$RelationCellState {
+abstract class RelationCellState with _$RelationCellState {
   const factory RelationCellState({
     required DatabaseMeta? relatedDatabaseMeta,
     required List<RelatedRowDataPB> rows,

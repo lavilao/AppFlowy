@@ -109,7 +109,7 @@ class ChangeCoverPopoverBloc
 }
 
 @freezed
-class ChangeCoverPopoverEvent with _$ChangeCoverPopoverEvent {
+abstract class ChangeCoverPopoverEvent with _$ChangeCoverPopoverEvent {
   const factory ChangeCoverPopoverEvent.fetchPickedImagePaths({
     @Default(false) bool selectLatestImage,
   }) = _FetchPickedImagePaths;
@@ -119,7 +119,7 @@ class ChangeCoverPopoverEvent with _$ChangeCoverPopoverEvent {
 }
 
 @freezed
-class ChangeCoverPopoverState with _$ChangeCoverPopoverState {
+abstract class ChangeCoverPopoverState with _$ChangeCoverPopoverState {
   const factory ChangeCoverPopoverState.initial() = _Initial;
   const factory ChangeCoverPopoverState.loading() = _Loading;
   const factory ChangeCoverPopoverState.loaded(

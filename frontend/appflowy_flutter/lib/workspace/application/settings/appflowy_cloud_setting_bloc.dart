@@ -94,7 +94,7 @@ class AppFlowyCloudSettingBloc
 }
 
 @freezed
-class AppFlowyCloudSettingEvent with _$AppFlowyCloudSettingEvent {
+abstract class AppFlowyCloudSettingEvent with _$AppFlowyCloudSettingEvent {
   const factory AppFlowyCloudSettingEvent.initial() = _Initial;
   const factory AppFlowyCloudSettingEvent.enableSync(bool isEnable) =
       _EnableSync;
@@ -109,7 +109,7 @@ class AppFlowyCloudSettingEvent with _$AppFlowyCloudSettingEvent {
 }
 
 @freezed
-class AppFlowyCloudSettingState with _$AppFlowyCloudSettingState {
+abstract class AppFlowyCloudSettingState with _$AppFlowyCloudSettingState {
   const factory AppFlowyCloudSettingState({
     required CloudSettingPB setting,
     required bool showRestartHint,

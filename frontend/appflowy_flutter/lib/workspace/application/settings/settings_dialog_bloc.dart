@@ -125,7 +125,7 @@ class SettingsDialogBloc
 }
 
 @freezed
-class SettingsDialogEvent with _$SettingsDialogEvent {
+abstract class SettingsDialogEvent with _$SettingsDialogEvent {
   const factory SettingsDialogEvent.initial() = _Initial;
   const factory SettingsDialogEvent.didReceiveUserProfile(
     UserProfilePB newUserProfile,
@@ -135,7 +135,7 @@ class SettingsDialogEvent with _$SettingsDialogEvent {
 }
 
 @freezed
-class SettingsDialogState with _$SettingsDialogState {
+abstract class SettingsDialogState with _$SettingsDialogState {
   const factory SettingsDialogState({
     required UserProfilePB userProfile,
     required SettingsPage page,

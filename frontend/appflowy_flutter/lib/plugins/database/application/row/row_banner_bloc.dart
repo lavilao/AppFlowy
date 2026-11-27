@@ -123,7 +123,7 @@ class RowBannerBloc extends Bloc<RowBannerEvent, RowBannerState> {
 }
 
 @freezed
-class RowBannerEvent with _$RowBannerEvent {
+abstract class RowBannerEvent with _$RowBannerEvent {
   const factory RowBannerEvent.initial() = _Initial;
   const factory RowBannerEvent.didReceiveRowMeta(RowMetaPB rowMeta) =
       _DidReceiveRowMeta;
@@ -135,7 +135,7 @@ class RowBannerEvent with _$RowBannerEvent {
 }
 
 @freezed
-class RowBannerState extends Equatable with _$RowBannerState {
+abstract class RowBannerState extends Equatable with _$RowBannerState {
   const RowBannerState._();
 
   const factory RowBannerState({
@@ -160,7 +160,7 @@ class RowBannerState extends Equatable with _$RowBannerState {
 }
 
 @freezed
-class LoadingState with _$LoadingState {
+abstract class LoadingState with _$LoadingState {
   const factory LoadingState.loading() = _Loading;
   const factory LoadingState.finish() = _Finish;
 }

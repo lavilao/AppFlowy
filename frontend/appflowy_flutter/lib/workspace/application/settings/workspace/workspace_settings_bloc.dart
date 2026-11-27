@@ -124,7 +124,7 @@ class WorkspaceSettingsBloc
 }
 
 @freezed
-class WorkspaceSettingsEvent with _$WorkspaceSettingsEvent {
+abstract class WorkspaceSettingsEvent with _$WorkspaceSettingsEvent {
   const factory WorkspaceSettingsEvent.initial({
     required UserProfilePB userProfile,
     @Default(null) UserWorkspacePB? workspace,
@@ -140,7 +140,7 @@ class WorkspaceSettingsEvent with _$WorkspaceSettingsEvent {
 }
 
 @freezed
-class WorkspaceSettingsState with _$WorkspaceSettingsState {
+abstract class WorkspaceSettingsState with _$WorkspaceSettingsState {
   const factory WorkspaceSettingsState({
     @Default(null) UserWorkspacePB? workspace,
     @Default([]) List<WorkspaceMemberPB> members,

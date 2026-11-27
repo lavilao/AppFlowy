@@ -124,7 +124,7 @@ List<CellMeta> _makeCells(
 }
 
 @freezed
-class CardEvent with _$CardEvent {
+abstract class CardEvent with _$CardEvent {
   const factory CardEvent.initial() = _InitialRow;
   const factory CardEvent.setIsEditing(bool isEditing) = _IsEditing;
   const factory CardEvent.didReceiveCells(
@@ -136,7 +136,7 @@ class CardEvent with _$CardEvent {
 }
 
 @freezed
-class CellMeta with _$CellMeta {
+abstract class CellMeta with _$CellMeta {
   const CellMeta._();
 
   const factory CellMeta({
@@ -149,7 +149,7 @@ class CellMeta with _$CellMeta {
 }
 
 @freezed
-class CardState with _$CardState {
+abstract class CardState with _$CardState {
   const factory CardState({
     required List<CellMeta> cells,
     required bool isEditing,

@@ -75,7 +75,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 }
 
 @freezed
-class HomeEvent with _$HomeEvent {
+abstract class HomeEvent with _$HomeEvent {
   const factory HomeEvent.initial() = _Initial;
   const factory HomeEvent.showLoading(bool isLoading) = _ShowLoading;
   const factory HomeEvent.didReceiveWorkspaceSetting(
@@ -84,7 +84,7 @@ class HomeEvent with _$HomeEvent {
 }
 
 @freezed
-class HomeState with _$HomeState {
+abstract class HomeState with _$HomeState {
   const factory HomeState({
     required bool isLoading,
     required WorkspaceLatestPB workspaceSetting,

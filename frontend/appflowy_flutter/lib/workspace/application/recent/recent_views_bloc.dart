@@ -61,7 +61,7 @@ class RecentViewsBloc extends Bloc<RecentViewsEvent, RecentViewsState> {
 }
 
 @freezed
-class RecentViewsEvent with _$RecentViewsEvent {
+abstract class RecentViewsEvent with _$RecentViewsEvent {
   const factory RecentViewsEvent.initial() = Initial;
   const factory RecentViewsEvent.addRecentViews(List<String> viewIds) =
       AddRecentViews;
@@ -73,7 +73,7 @@ class RecentViewsEvent with _$RecentViewsEvent {
 }
 
 @freezed
-class RecentViewsState with _$RecentViewsState {
+abstract class RecentViewsState with _$RecentViewsState {
   const factory RecentViewsState({
     required List<SectionViewPB> views,
     @Default(true) bool isLoading,

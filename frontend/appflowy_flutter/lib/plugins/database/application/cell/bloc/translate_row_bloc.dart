@@ -71,7 +71,7 @@ class TranslateRowBloc extends Bloc<TranslateRowEvent, TranslateRowState> {
 }
 
 @freezed
-class TranslateRowEvent with _$TranslateRowEvent {
+abstract class TranslateRowEvent with _$TranslateRowEvent {
   const factory TranslateRowEvent.startTranslate() = _DidStartTranslate;
   const factory TranslateRowEvent.finishTranslate(
     FlowyResult<void, FlowyError> result,
@@ -79,7 +79,7 @@ class TranslateRowEvent with _$TranslateRowEvent {
 }
 
 @freezed
-class TranslateRowState with _$TranslateRowState {
+abstract class TranslateRowState with _$TranslateRowState {
   const factory TranslateRowState({
     required LoadingState loadingState,
     required FlowyError? error,
@@ -94,7 +94,7 @@ class TranslateRowState with _$TranslateRowState {
 }
 
 @freezed
-class LoadingState with _$LoadingState {
+abstract class LoadingState with _$LoadingState {
   const factory LoadingState.loading() = _Loading;
   const factory LoadingState.finish() = _Finish;
 }

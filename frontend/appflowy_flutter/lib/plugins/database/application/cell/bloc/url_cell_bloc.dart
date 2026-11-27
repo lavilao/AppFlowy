@@ -104,7 +104,7 @@ class URLCellBloc extends Bloc<URLCellEvent, URLCellState> {
 }
 
 @freezed
-class URLCellEvent with _$URLCellEvent {
+abstract class URLCellEvent with _$URLCellEvent {
   const factory URLCellEvent.updateURL(String url) = _UpdateURL;
   const factory URLCellEvent.didUpdateCell(URLCellDataPB? cell) =
       _DidUpdateCell;
@@ -113,7 +113,7 @@ class URLCellEvent with _$URLCellEvent {
 }
 
 @freezed
-class URLCellState with _$URLCellState {
+abstract class URLCellState with _$URLCellState {
   const factory URLCellState({
     required String content,
     required bool isValid,

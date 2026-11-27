@@ -445,7 +445,7 @@ class ViewSelectorCubit extends Cubit<ViewSelectorState> {
 }
 
 @freezed
-class ViewSelectorState with _$ViewSelectorState {
+abstract class ViewSelectorState with _$ViewSelectorState {
   const factory ViewSelectorState({
     required List<ViewSelectorItem> visibleSources,
     required List<ViewSelectorItem> selectedSources,

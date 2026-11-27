@@ -46,7 +46,7 @@ class ChatMemberBloc extends Bloc<ChatMemberEvent, ChatMemberState> {
 }
 
 @freezed
-class ChatMemberEvent with _$ChatMemberEvent {
+abstract class ChatMemberEvent with _$ChatMemberEvent {
   const factory ChatMemberEvent.getMemberInfo(
     String userId,
   ) = _GetMemberInfo;
@@ -57,7 +57,7 @@ class ChatMemberEvent with _$ChatMemberEvent {
 }
 
 @freezed
-class ChatMemberState with _$ChatMemberState {
+abstract class ChatMemberState with _$ChatMemberState {
   const factory ChatMemberState({
     @Default({}) Map<String, ChatMember> members,
   }) = _ChatMemberState;

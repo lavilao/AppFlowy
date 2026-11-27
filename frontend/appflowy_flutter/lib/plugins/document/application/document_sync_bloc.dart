@@ -80,7 +80,7 @@ class DocumentSyncBloc extends Bloc<DocumentSyncEvent, DocumentSyncBlocState> {
 }
 
 @freezed
-class DocumentSyncEvent with _$DocumentSyncEvent {
+abstract class DocumentSyncEvent with _$DocumentSyncEvent {
   const factory DocumentSyncEvent.initial() = Initial;
   const factory DocumentSyncEvent.syncStateChanged(
     DocumentSyncStatePB syncState,
@@ -91,7 +91,7 @@ class DocumentSyncEvent with _$DocumentSyncEvent {
 }
 
 @freezed
-class DocumentSyncBlocState with _$DocumentSyncBlocState {
+abstract class DocumentSyncBlocState with _$DocumentSyncBlocState {
   const factory DocumentSyncBlocState({
     required DocumentSyncState syncState,
     @Default(true) bool isNetworkConnected,

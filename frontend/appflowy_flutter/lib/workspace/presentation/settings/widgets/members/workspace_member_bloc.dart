@@ -440,7 +440,7 @@ class WorkspaceMemberBloc
 }
 
 @freezed
-class WorkspaceMemberEvent with _$WorkspaceMemberEvent {
+abstract class WorkspaceMemberEvent with _$WorkspaceMemberEvent {
   const factory WorkspaceMemberEvent.initial() = Initial;
 
   // Members related events
@@ -500,7 +500,7 @@ class WorkspaceMemberActionResult {
 }
 
 @freezed
-class WorkspaceMemberState with _$WorkspaceMemberState {
+abstract class WorkspaceMemberState with _$WorkspaceMemberState {
   const WorkspaceMemberState._();
 
   const factory WorkspaceMemberState({

@@ -81,7 +81,7 @@ class AppFlowyCloudURLsBloc
 }
 
 @freezed
-class AppFlowyCloudURLsEvent with _$AppFlowyCloudURLsEvent {
+abstract class AppFlowyCloudURLsEvent with _$AppFlowyCloudURLsEvent {
   const factory AppFlowyCloudURLsEvent.initial() = _Initial;
   const factory AppFlowyCloudURLsEvent.updateServerUrl(String text) =
       _ServerUrl;
@@ -92,7 +92,7 @@ class AppFlowyCloudURLsEvent with _$AppFlowyCloudURLsEvent {
 }
 
 @freezed
-class AppFlowyCloudURLsState with _$AppFlowyCloudURLsState {
+abstract class AppFlowyCloudURLsState with _$AppFlowyCloudURLsState {
   const factory AppFlowyCloudURLsState({
     required AppFlowyCloudConfiguration config,
     required String updatedServerUrl,

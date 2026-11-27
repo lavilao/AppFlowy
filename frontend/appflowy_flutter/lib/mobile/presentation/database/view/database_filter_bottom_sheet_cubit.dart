@@ -80,7 +80,7 @@ class MobileFilterEditorCubit extends Cubit<MobileFilterEditorState> {
 }
 
 @freezed
-class MobileFilterEditorState with _$MobileFilterEditorState {
+abstract class MobileFilterEditorState with _$MobileFilterEditorState {
   factory MobileFilterEditorState.overview({
     @Default(false) bool scrollToBottom,
   }) = _OverviewState;
