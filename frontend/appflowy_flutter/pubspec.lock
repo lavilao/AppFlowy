@@ -461,29 +461,29 @@ packages:
     source: hosted
     version: "1.15.1"
   cross_cache:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: cross_cache
-      sha256: "80329477264c73f09945ee780ccdc84df9231f878dc7227d132d301e34ff310b"
+      sha256: "35dacce2ffc46c2fd28154736a77eecc2ac5a71008f9be25c503a7128bf466a8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.4"
+    version: "1.1.1"
   cross_file:
     dependency: "direct main"
     description:
       name: cross_file
-      sha256: "7caf6a750a0c04effbb52a676dce9a4a592e10ad35c34d6d2d0e4811160d5670"
+      sha256: f141ea4f277af142a0356955707f6556f37b03947d39d55585981a06ca437bd6
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.4+2"
+    version: "0.3.5+5"
   crypto:
     dependency: transitive
     description:
       name: crypto
-      sha256: "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
+      sha256: e3626ae6270383c9e3a549f34c9e4cd26c09ae6a9adaab2bf4737a00340efdc4
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.6"
+    version: "3.0.8"
   csslib:
     dependency: transitive
     description:
@@ -568,10 +568,10 @@ packages:
     dependency: transitive
     description:
       name: dio
-      sha256: "5598aa796bbf4699afd5c67c0f5f6e2ed542afc956884b9cd58c306966efc260"
+      sha256: "852ec3b48cc431ac04fff978413c541502b67ffc3e26921e74e3d994694192c1"
       url: "https://pub.dev"
     source: hosted
-    version: "5.7.0"
+    version: "5.11.1"
   dio_web_adapter:
     dependency: transitive
     description:
@@ -1152,6 +1152,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  idb_shim:
+    dependency: transitive
+    description:
+      name: idb_shim
+      sha256: "48be1c95f06c4b059d0f5b9888dc5d7384e4a9e4d71824ae2deeb1e1546c6c07"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.9.2"
   image:
     dependency: "direct main"
     description:
@@ -1943,6 +1951,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.8"
+  sembast:
+    dependency: transitive
+    description:
+      name: sembast
+      sha256: "93654267ad36e72ef130ffc05970287f42955b40f07d0efd264e64f7215fa1de"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.8.7"
   share_plus:
     dependency: "direct main"
     description:

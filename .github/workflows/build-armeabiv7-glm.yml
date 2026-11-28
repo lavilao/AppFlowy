@@ -364,6 +364,21 @@ jobs:
         shell: bash
 
       # ──────────────────────────────────────────────────────────────────────
+      # The pinned appflowy_editor revision predates Flutter 3.50's
+      # TextInputClient.onFocusReceived, so its DeltaTextInputService does not
+      # compile as-is. Upstream fixed it in a July 2026 commit; until the app
+      # moves to a newer editor, the one missing method is spliced into the
+      # checkout. Idempotent, and it fails the build if the pinned revision
+      # no longer looks the way the patch expects.
+      # ──────────────────────────────────────────────────────────────────────
+      - name: Patch pinned dependencies for Flutter 3.50
+        working-directory: frontend
+        run: |
+          set -euo pipefail
+          bash ./scripts/patch_appflowy_editor.sh
+        shell: bash
+
+      # ──────────────────────────────────────────────────────────────────────
       # Cactus on-device intelligence.
       #
       # The static engine (5 MB, both Android ABIs) is linked into
