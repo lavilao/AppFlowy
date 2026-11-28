@@ -161,14 +161,14 @@ class FieldEditorBloc extends Bloc<FieldEditorEvent, FieldEditorState> {
 
 @freezed
 abstract class FieldEditorEvent with _$FieldEditorEvent {
-  const factory FieldEditorEvent.didUpdateField(final FieldInfo fieldInfo) =
+  const factory FieldEditorEvent.didUpdateField(FieldInfo fieldInfo) =
       _DidUpdateField;
-  const factory FieldEditorEvent.switchFieldType(final FieldType fieldType) =
+  const factory FieldEditorEvent.switchFieldType(FieldType fieldType) =
       _SwitchFieldType;
   const factory FieldEditorEvent.updateTypeOption(
-    final Uint8List typeOptionData,
+    Uint8List typeOptionData,
   ) = _UpdateTypeOption;
-  const factory FieldEditorEvent.renameField(final String name) = _RenameField;
+  const factory FieldEditorEvent.renameField(String name) = _RenameField;
   const factory FieldEditorEvent.updateIcon(String icon) = _UpdateIcon;
   const factory FieldEditorEvent.insertLeft() = _InsertLeft;
   const factory FieldEditorEvent.insertRight() = _InsertRight;
@@ -181,7 +181,7 @@ abstract class FieldEditorEvent with _$FieldEditorEvent {
 @freezed
 abstract class FieldEditorState with _$FieldEditorState {
   const factory FieldEditorState({
-    required final FieldInfo field,
+    required FieldInfo field,
     @Default(false) bool wasRenameManually,
   }) = _FieldEditorState;
 }

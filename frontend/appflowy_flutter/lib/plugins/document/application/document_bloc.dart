@@ -458,7 +458,7 @@ abstract class DocumentEvent with _$DocumentEvent {
   const factory DocumentEvent.restorePage() = RestorePage;
   const factory DocumentEvent.deletePermanently() = DeletePermanently;
   const factory DocumentEvent.syncStateChanged(
-    final DocumentSyncStatePB syncState,
+    DocumentSyncStatePB syncState,
   ) = syncStateChanged;
   const factory DocumentEvent.syncAwarenessStates() = SyncAwarenessStates;
   const factory DocumentEvent.clearAwarenessStates() = ClearAwarenessStates;
@@ -467,10 +467,10 @@ abstract class DocumentEvent with _$DocumentEvent {
 @freezed
 abstract class DocumentState with _$DocumentState {
   const factory DocumentState({
-    required final bool isDeleted,
-    required final bool forceClose,
-    required final bool isLoading,
-    required final DocumentSyncState syncState,
+    required bool isDeleted,
+    required bool forceClose,
+    required bool isLoading,
+    required DocumentSyncState syncState,
     bool? isDocumentEmpty,
     UserProfilePB? userProfilePB,
     EditorState? editorState,
