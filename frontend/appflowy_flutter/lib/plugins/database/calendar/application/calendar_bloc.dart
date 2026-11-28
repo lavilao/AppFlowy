@@ -432,7 +432,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 typedef Events = List<CalendarEventData<CalendarDayEvent>>;
 
 @freezed
-class CalendarEvent with _$CalendarEvent {
+abstract class CalendarEvent with _$CalendarEvent {
   const factory CalendarEvent.initial() = _InitialCalendar;
 
   // Called after loading the calendar layout setting from the backend
@@ -492,7 +492,7 @@ class CalendarEvent with _$CalendarEvent {
 }
 
 @freezed
-class CalendarState with _$CalendarState {
+abstract class CalendarState with _$CalendarState {
   const factory CalendarState({
     required DatabasePB? database,
     // events by row id
@@ -521,7 +521,7 @@ class CalendarState with _$CalendarState {
 }
 
 @freezed
-class CalendarDayEvent with _$CalendarDayEvent {
+abstract class CalendarDayEvent with _$CalendarDayEvent {
   const factory CalendarDayEvent({
     required CalendarEventPB event,
     required String dateFieldId,

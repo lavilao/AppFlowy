@@ -24,12 +24,12 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
 }
 
 @freezed
-class SplashEvent with _$SplashEvent {
+abstract class SplashEvent with _$SplashEvent {
   const factory SplashEvent.getUser() = _GetUser;
 }
 
 @freezed
-class SplashState with _$SplashState {
+abstract class SplashState with _$SplashState {
   const factory SplashState({
     required AuthState auth,
   }) = _SplashState;

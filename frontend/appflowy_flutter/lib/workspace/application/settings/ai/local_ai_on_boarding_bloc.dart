@@ -107,7 +107,7 @@ class LocalAIOnBoardingBloc
 }
 
 @freezed
-class LocalAIOnBoardingEvent with _$LocalAIOnBoardingEvent {
+abstract class LocalAIOnBoardingEvent with _$LocalAIOnBoardingEvent {
   const factory LocalAIOnBoardingEvent.started() = _Started;
   const factory LocalAIOnBoardingEvent.addSubscription(
     SubscriptionPlanPB plan,
@@ -121,7 +121,7 @@ class LocalAIOnBoardingEvent with _$LocalAIOnBoardingEvent {
 }
 
 @freezed
-class LocalAIOnBoardingState with _$LocalAIOnBoardingState {
+abstract class LocalAIOnBoardingState with _$LocalAIOnBoardingState {
   const factory LocalAIOnBoardingState({
     @Default(false) bool isPurchaseAILocal,
     @Default(false) bool isLoading,

@@ -60,7 +60,7 @@ class BoardActionsCubit extends Cubit<BoardActionsState> {
 }
 
 @freezed
-class BoardActionsState with _$BoardActionsState {
+abstract class BoardActionsState with _$BoardActionsState {
   const factory BoardActionsState.initial() = _BoardActionsInitialState;
 
   const factory BoardActionsState.openCard({

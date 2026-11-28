@@ -19,7 +19,7 @@ import 'cell_data_persistence.dart';
 part 'cell_controller.freezed.dart';
 
 @freezed
-class CellContext with _$CellContext {
+abstract class CellContext with _$CellContext {
   const factory CellContext({
     required String fieldId,
     required RowId rowId,

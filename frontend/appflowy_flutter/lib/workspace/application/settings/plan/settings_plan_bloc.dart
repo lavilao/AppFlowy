@@ -201,7 +201,7 @@ class SettingsPlanBloc extends Bloc<SettingsPlanEvent, SettingsPlanState> {
 }
 
 @freezed
-class SettingsPlanEvent with _$SettingsPlanEvent {
+abstract class SettingsPlanEvent with _$SettingsPlanEvent {
   const factory SettingsPlanEvent.started({
     @Default(null) SubscriptionPlanPB? withSuccessfulUpgrade,
     @Default(true) bool shouldLoad,
@@ -220,7 +220,7 @@ class SettingsPlanEvent with _$SettingsPlanEvent {
 }
 
 @freezed
-class SettingsPlanState with _$SettingsPlanState {
+abstract class SettingsPlanState with _$SettingsPlanState {
   const factory SettingsPlanState.initial() = _Initial;
 
   const factory SettingsPlanState.loading() = _Loading;

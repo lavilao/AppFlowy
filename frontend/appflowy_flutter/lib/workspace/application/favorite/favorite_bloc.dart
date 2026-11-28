@@ -115,7 +115,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
 }
 
 @freezed
-class FavoriteEvent with _$FavoriteEvent {
+abstract class FavoriteEvent with _$FavoriteEvent {
   const factory FavoriteEvent.initial() = Initial;
 
   const factory FavoriteEvent.toggle(ViewPB view) = ToggleFavorite;
@@ -131,7 +131,7 @@ class FavoriteEvent with _$FavoriteEvent {
 }
 
 @freezed
-class FavoriteState with _$FavoriteState {
+abstract class FavoriteState with _$FavoriteState {
   const factory FavoriteState({
     @Default([]) List<SectionViewPB> views,
     @Default([]) List<SectionViewPB> pinnedViews,

@@ -115,14 +115,14 @@ class SpaceOrderBloc extends Bloc<SpaceOrderEvent, SpaceOrderState> {
 }
 
 @freezed
-class SpaceOrderEvent with _$SpaceOrderEvent {
+abstract class SpaceOrderEvent with _$SpaceOrderEvent {
   const factory SpaceOrderEvent.initial() = Initial;
   const factory SpaceOrderEvent.open(int index) = Open;
   const factory SpaceOrderEvent.reorder(int from, int to) = Reorder;
 }
 
 @freezed
-class SpaceOrderState with _$SpaceOrderState {
+abstract class SpaceOrderState with _$SpaceOrderState {
   const factory SpaceOrderState({
     @Default(MobileSpaceTabType.spaces) MobileSpaceTabType defaultTab,
     @Default(MobileSpaceTabType.values) List<MobileSpaceTabType> tabsOrder,

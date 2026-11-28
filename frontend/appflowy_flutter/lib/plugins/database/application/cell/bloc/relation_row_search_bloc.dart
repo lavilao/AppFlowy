@@ -106,7 +106,7 @@ class RelationRowSearchBloc
 }
 
 @freezed
-class RelationRowSearchEvent with _$RelationRowSearchEvent {
+abstract class RelationRowSearchEvent with _$RelationRowSearchEvent {
   const factory RelationRowSearchEvent.didUpdateRowList(
     List<RelatedRowDataPB> rowList,
   ) = _DidUpdateRowList;
@@ -121,7 +121,7 @@ class RelationRowSearchEvent with _$RelationRowSearchEvent {
 }
 
 @freezed
-class RelationRowSearchState with _$RelationRowSearchState {
+abstract class RelationRowSearchState with _$RelationRowSearchState {
   const factory RelationRowSearchState({
     required List<RelatedRowDataPB> filteredRows,
     required String? focusedRowId,

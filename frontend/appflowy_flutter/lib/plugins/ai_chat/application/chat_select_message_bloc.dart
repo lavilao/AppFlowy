@@ -82,7 +82,7 @@ class ChatSelectMessageBloc
 }
 
 @freezed
-class ChatSelectMessageEvent with _$ChatSelectMessageEvent {
+abstract class ChatSelectMessageEvent with _$ChatSelectMessageEvent {
   const factory ChatSelectMessageEvent.enableStartSelectingMessages() =
       _EnableStartSelectingMessages;
   const factory ChatSelectMessageEvent.toggleSelectingMessages() =
@@ -98,7 +98,7 @@ class ChatSelectMessageEvent with _$ChatSelectMessageEvent {
 }
 
 @freezed
-class ChatSelectMessageState with _$ChatSelectMessageState {
+abstract class ChatSelectMessageState with _$ChatSelectMessageState {
   const factory ChatSelectMessageState({
     required bool isSelectingMessages,
     required List<Message> selectedMessages,

@@ -1,0 +1,9 @@
+[package]
+name = "flowy-intelligence-core"
+version = "0.1.0"
+edition = "2024"
+description = "Deterministic, on-device text intelligence for AppFlowy (no network, no model downloads)."
+
+# Intentionally dependency free: the engine only uses `std` so it can be unit
+# tested in isolation and reused from any layer (plugins, CLI tools, tests).
+[dependencies]

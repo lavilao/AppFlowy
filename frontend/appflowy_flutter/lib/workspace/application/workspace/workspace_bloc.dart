@@ -82,7 +82,7 @@ class WorkspaceBloc extends Bloc<WorkspaceEvent, WorkspaceState> {
 }
 
 @freezed
-class WorkspaceEvent with _$WorkspaceEvent {
+abstract class WorkspaceEvent with _$WorkspaceEvent {
   const factory WorkspaceEvent.initial() = Initial;
   const factory WorkspaceEvent.createWorkspace(String name, String desc) =
       CreateWorkspace;
@@ -92,7 +92,7 @@ class WorkspaceEvent with _$WorkspaceEvent {
 }
 
 @freezed
-class WorkspaceState with _$WorkspaceState {
+abstract class WorkspaceState with _$WorkspaceState {
   const factory WorkspaceState({
     required bool isLoading,
     required List<WorkspacePB> workspaces,

@@ -37,6 +37,7 @@ import 'widgets/footer/grid_footer.dart';
 import 'widgets/header/grid_header.dart';
 import 'widgets/row/row.dart';
 import 'widgets/shortcuts.dart';
+import 'package:appflowy/plugins/database/application/defines.dart';
 
 class ToggleExtensionNotifier extends ChangeNotifier {
   bool _isToggled = false;

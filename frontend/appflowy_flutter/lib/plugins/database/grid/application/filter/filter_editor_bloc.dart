@@ -182,7 +182,7 @@ class FilterEditorBloc extends Bloc<FilterEditorEvent, FilterEditorState> {
 }
 
 @freezed
-class FilterEditorEvent with _$FilterEditorEvent {
+abstract class FilterEditorEvent with _$FilterEditorEvent {
   const factory FilterEditorEvent.didReceiveFilters(
     List<DatabaseFilter> filters,
   ) = _DidReceiveFilters;
@@ -199,7 +199,7 @@ class FilterEditorEvent with _$FilterEditorEvent {
 }
 
 @freezed
-class FilterEditorState with _$FilterEditorState {
+abstract class FilterEditorState with _$FilterEditorState {
   const factory FilterEditorState({
     required String viewId,
     required List<DatabaseFilter> filters,

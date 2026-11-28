@@ -179,7 +179,7 @@ class ChecklistCellBloc extends Bloc<ChecklistCellEvent, ChecklistCellState> {
 }
 
 @freezed
-class ChecklistCellEvent with _$ChecklistCellEvent {
+abstract class ChecklistCellEvent with _$ChecklistCellEvent {
   const factory ChecklistCellEvent.didUpdateCell(
     ChecklistCellDataPB? data,
   ) = _DidUpdateCell;
@@ -202,7 +202,7 @@ class ChecklistCellEvent with _$ChecklistCellEvent {
 }
 
 @freezed
-class ChecklistCellState with _$ChecklistCellState {
+abstract class ChecklistCellState with _$ChecklistCellState {
   const factory ChecklistCellState({
     required List<ChecklistSelectOption> tasks,
     required double percent,

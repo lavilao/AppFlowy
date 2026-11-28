@@ -196,7 +196,7 @@ class CoverImagePickerBloc
 }
 
 @freezed
-class CoverImagePickerEvent with _$CoverImagePickerEvent {
+abstract class CoverImagePickerEvent with _$CoverImagePickerEvent {
   const factory CoverImagePickerEvent.urlSubmit(String path) = _UrlSubmit;
   const factory CoverImagePickerEvent.pickFileImage() = _PickFileImage;
   const factory CoverImagePickerEvent.deleteImage() = _DeleteImage;
@@ -207,7 +207,7 @@ class CoverImagePickerEvent with _$CoverImagePickerEvent {
 }
 
 @freezed
-class CoverImagePickerState with _$CoverImagePickerState {
+abstract class CoverImagePickerState with _$CoverImagePickerState {
   const factory CoverImagePickerState.initial() = _Initial;
   const factory CoverImagePickerState.loading() = _Loading;
   const factory CoverImagePickerState.networkImage(

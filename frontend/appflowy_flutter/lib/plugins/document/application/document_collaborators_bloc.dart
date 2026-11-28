@@ -114,7 +114,7 @@ class DocumentCollaboratorsBloc
 }
 
 @freezed
-class DocumentCollaboratorsEvent with _$DocumentCollaboratorsEvent {
+abstract class DocumentCollaboratorsEvent with _$DocumentCollaboratorsEvent {
   const factory DocumentCollaboratorsEvent.initial() = Initial;
   const factory DocumentCollaboratorsEvent.update(
     UserProfilePB userProfile,
@@ -124,7 +124,7 @@ class DocumentCollaboratorsEvent with _$DocumentCollaboratorsEvent {
 }
 
 @freezed
-class DocumentCollaboratorsState with _$DocumentCollaboratorsState {
+abstract class DocumentCollaboratorsState with _$DocumentCollaboratorsState {
   const factory DocumentCollaboratorsState({
     @Default([]) List<DocumentAwarenessMetadata> collaborators,
     @Default(false) bool shouldShowIndicator,

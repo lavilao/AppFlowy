@@ -273,7 +273,7 @@ class SidebarSectionsBloc
 }
 
 @freezed
-class SidebarSectionsEvent with _$SidebarSectionsEvent {
+abstract class SidebarSectionsEvent with _$SidebarSectionsEvent {
   const factory SidebarSectionsEvent.initial(
     UserProfilePB userProfile,
     String workspaceId,
@@ -303,7 +303,7 @@ class SidebarSectionsEvent with _$SidebarSectionsEvent {
 }
 
 @freezed
-class SidebarSectionsState with _$SidebarSectionsState {
+abstract class SidebarSectionsState with _$SidebarSectionsState {
   const factory SidebarSectionsState({
     required SidebarSection section,
     @Default(null) ViewPB? lastCreatedRootView,

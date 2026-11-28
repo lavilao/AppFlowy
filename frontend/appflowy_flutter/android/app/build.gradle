@@ -1,14 +1,20 @@
+plugins {
+    id "com.android.application"
+    // Declared with the same id in settings.gradle (KGP publishes the legacy
+    // "kotlin-android" alias, but keeping one id avoids resolution surprises).
+    id "org.jetbrains.kotlin.android"
+    // Compiles and embeds the Dart code (the plugin used to be applied with
+    // `apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"`,
+    // which Flutter 3.50 no longer allows).
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
     localPropertiesFile.withReader('UTF-8') { reader ->
         localProperties.load(reader)
     }
-}
-
-def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
@@ -21,10 +27,6 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
@@ -32,29 +34,31 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 35
+    compileSdk 36
     // MUST be the same NDK that builds libdart_ffi.so (the Rust backend, built
     // by cargo-ndk with the NDK pinned in the CI workflow). libdart_ffi.so
     // links libc++_shared.so dynamically against that NDK's C++ runtime, and
     // src/main/CMakeLists.txt copies libc++_shared.so into the APK from THIS
-    // ndkVersion — it also overwrites the r27d copy that cargo-ndk drops into
-    // jniLibs. If the two drift apart (e.g. an r24 runtime packaged next to an
-    // r27d-linked libdart_ffi.so), dlopen fails on launch with:
+    // ndkVersion — it also overwrites the copy that cargo-ndk drops into
+    // jniLibs. If the two drift apart (an older runtime packaged next to a
+    // newer-linked libdart_ffi.so), dlopen fails on launch with:
     //   dlopen failed: cannot locate symbol
     //   "_ZTTNSt6__ndk118basic_stringstreamIcNS_11char_traitsIcEENS_9allocatorIcEEEE"
     // (17 missing __ndk1 symbols: stringstream/stringbuf/filebuf vtables &
     // VTTs) → "Failed to load dynamic library 'libdart_ffi.so'" before the
     // first Flutter frame, i.e. the black-screen crash on 32-bit devices.
     // r27d == 27.3.13750724 (https://github.com/android/ndk/releases/tag/r27d).
-    ndkVersion "27.3.13750724"
+    // NDK r28c == 28.2.13676358, the default of Flutter 3.50 (gradle_utils.dart).
+    // It MUST stay in lockstep with the NDK that cargo-ndk links
+    // libdart_ffi.so against (CI NDK_VERSION) and with the libc++_shared.so
+    // that src/main/CMakeLists.txt copies into the APK: Flutter's own plugin
+    // modules build with flutter.ndkVersion, so a different value here would
+    // put two NDKs' native output in one APK.
+    ndkVersion "28.2.13676358"
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     sourceSets {
@@ -68,7 +72,7 @@ android {
     // (frontend/scripts/check_apk_libcxx_symbols.sh) verifies that the copy
     // that survives is the NDK r27d runtime that libdart_ffi.so was linked
     // against.
-    packagingOptions {
+    packaging {
         jniLibs {
             pickFirsts += ['**/libc++_shared.so']
         }
@@ -77,8 +81,8 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "io.appflowy.appflowy"
-        minSdkVersion 29
-        targetSdkVersion 35
+        minSdk 29
+        targetSdk 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -118,13 +122,13 @@ android {
 
     defaultConfig {
         ndk {
-            // Upstream pinned "arm64-v8a" here, but ndk.abiFilters CONFLICTS
-            // with splits.abi once --split-per-abi is used ("Conflicting
-            // configuration: 'arm64-v8a' in ndk abiFilters cannot be present
-            // when splits abi filters are set: armeabi-v7a"). The armeabi-v7a
-            // fork drives ABI selection through splits instead — do not
-            // re-enable without dropping --split-per-abi.
-            // abiFilters "arm64-v8a"
+            // This fork ships a single, 32-bit APK. AGP 9 no longer leaves the
+            // --split-per-abi output where Flutter's tool looks for it, so the
+            // build is a plain arm build (--target-platform android-arm) and
+            // the ABI is pinned here: otherwise the libc++ copies that
+            // src/main/CMakeLists.txt drops into jniLibs for the other ABIs
+            // would be packaged as well.
+            abiFilters "armeabi-v7a"
         }
     }
 }
@@ -133,7 +137,13 @@ flutter {
     source '../..'
 }
 
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.android.support:multidex:2.0.1"
+// Kotlin 2.x sets jvmTarget from compileOptions; the Kotlin Gradle plugin adds
+// the stdlib automatically, and minSdk 29 has native multidex (the legacy
+// com.android.support:multidex artifact and kotlin-stdlib-jdk7 no longer have
+// a job here).
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+    }
 }

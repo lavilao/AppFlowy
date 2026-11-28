@@ -387,7 +387,7 @@ enum ShareType {
 }
 
 @freezed
-class ShareEvent with _$ShareEvent {
+abstract class ShareEvent with _$ShareEvent {
   const factory ShareEvent.initial() = _Initial;
 
   const factory ShareEvent.share(
@@ -417,7 +417,7 @@ class ShareEvent with _$ShareEvent {
 }
 
 @freezed
-class ShareState with _$ShareState {
+abstract class ShareState with _$ShareState {
   const factory ShareState({
     required bool isPublished,
     required bool isLoading,

@@ -205,7 +205,7 @@ class MobileAppearance extends BaseAppearance {
           letterSpacing: 0.05,
         ),
       ),
-      inputDecorationTheme: InputDecorationTheme(
+      inputDecorationTheme: InputDecorationThemeData(
         contentPadding: const EdgeInsets.all(8),
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(

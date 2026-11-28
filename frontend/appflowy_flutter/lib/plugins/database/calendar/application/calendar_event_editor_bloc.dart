@@ -96,7 +96,7 @@ class CalendarEventEditorBloc
 }
 
 @freezed
-class CalendarEventEditorEvent with _$CalendarEventEditorEvent {
+abstract class CalendarEventEditorEvent with _$CalendarEventEditorEvent {
   const factory CalendarEventEditorEvent.initial() = _Initial;
   const factory CalendarEventEditorEvent.didReceiveCellDatas(
     List<CellContext> cells,
@@ -105,7 +105,7 @@ class CalendarEventEditorEvent with _$CalendarEventEditorEvent {
 }
 
 @freezed
-class CalendarEventEditorState with _$CalendarEventEditorState {
+abstract class CalendarEventEditorState with _$CalendarEventEditorState {
   const factory CalendarEventEditorState({
     required List<CellContext> cells,
   }) = _CalendarEventEditorState;

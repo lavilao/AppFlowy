@@ -178,7 +178,7 @@ class NotificationReminderBloc
 }
 
 @freezed
-class NotificationReminderEvent with _$NotificationReminderEvent {
+abstract class NotificationReminderEvent with _$NotificationReminderEvent {
   const factory NotificationReminderEvent.initial(
     ReminderPB reminder,
     UserDateFormatPB dateFormat,
@@ -196,7 +196,7 @@ enum NotificationReminderStatus {
 }
 
 @freezed
-class NotificationReminderState with _$NotificationReminderState {
+abstract class NotificationReminderState with _$NotificationReminderState {
   const NotificationReminderState._();
 
   const factory NotificationReminderState({

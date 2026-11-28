@@ -225,7 +225,7 @@ class RowDetailBloc extends Bloc<RowDetailEvent, RowDetailState> {
 }
 
 @freezed
-class RowDetailEvent with _$RowDetailEvent {
+abstract class RowDetailEvent with _$RowDetailEvent {
   const factory RowDetailEvent.didUpdateFields(List<FieldInfo> fields) =
       _DidUpdateFields;
 
@@ -271,7 +271,7 @@ class RowDetailEvent with _$RowDetailEvent {
 }
 
 @freezed
-class RowDetailState with _$RowDetailState {
+abstract class RowDetailState with _$RowDetailState {
   const factory RowDetailState({
     required List<FieldInfo> fields,
     required List<CellContext> visibleCells,

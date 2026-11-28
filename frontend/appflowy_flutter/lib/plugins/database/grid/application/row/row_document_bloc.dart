@@ -112,7 +112,7 @@ class RowDocumentBloc extends Bloc<RowDocumentEvent, RowDocumentState> {
 }
 
 @freezed
-class RowDocumentEvent with _$RowDocumentEvent {
+abstract class RowDocumentEvent with _$RowDocumentEvent {
   const factory RowDocumentEvent.initial() = _InitialRow;
   const factory RowDocumentEvent.didReceiveRowDocument(ViewPB view) =
       _DidReceiveRowDocument;
@@ -123,7 +123,7 @@ class RowDocumentEvent with _$RowDocumentEvent {
 }
 
 @freezed
-class RowDocumentState with _$RowDocumentState {
+abstract class RowDocumentState with _$RowDocumentState {
   const factory RowDocumentState({
     ViewPB? viewPB,
     required LoadingState loadingState,
@@ -135,7 +135,7 @@ class RowDocumentState with _$RowDocumentState {
 }
 
 @freezed
-class LoadingState with _$LoadingState {
+abstract class LoadingState with _$LoadingState {
   const factory LoadingState.loading() = _Loading;
   const factory LoadingState.error(FlowyError error) = _Error;
   const factory LoadingState.finish() = _Finish;

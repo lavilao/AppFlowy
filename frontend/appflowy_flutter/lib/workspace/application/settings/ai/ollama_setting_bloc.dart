@@ -188,7 +188,7 @@ class SubmittedItem extends Equatable {
 }
 
 @freezed
-class OllamaSettingEvent with _$OllamaSettingEvent {
+abstract class OllamaSettingEvent with _$OllamaSettingEvent {
   const factory OllamaSettingEvent.started() = _Started;
   const factory OllamaSettingEvent.didLoadLocalModels(
     ModelSelectionPB models,
@@ -210,7 +210,7 @@ class OllamaSettingEvent with _$OllamaSettingEvent {
 }
 
 @freezed
-class OllamaSettingState with _$OllamaSettingState {
+abstract class OllamaSettingState with _$OllamaSettingState {
   const factory OllamaSettingState({
     LocalAISettingPB? setting,
     @Default([]) List<SettingItem> inputItems,

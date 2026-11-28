@@ -79,7 +79,7 @@ class NotificationSettingsCubit extends Cubit<NotificationSettingsState> {
 }
 
 @freezed
-class NotificationSettingsState with _$NotificationSettingsState {
+abstract class NotificationSettingsState with _$NotificationSettingsState {
   const NotificationSettingsState._();
 
   const factory NotificationSettingsState({

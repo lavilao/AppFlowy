@@ -29,6 +29,8 @@ members = [
   "flowy-search-pub",
   "flowy-ai",
   "flowy-ai-pub",
+  "flowy-intelligence",
+  "flowy-intelligence-core",
   "flowy-storage-pub",
   "flowy-sqlite-vec",
 ]
@@ -65,6 +67,8 @@ collab-integrate = { path = "collab-integrate" }
 flowy-date = { path = "flowy-date" }
 flowy-ai = { path = "flowy-ai" }
 flowy-ai-pub = { path = "flowy-ai-pub" }
+flowy-intelligence = { path = "flowy-intelligence" }
+flowy-intelligence-core = { path = "flowy-intelligence-core" }
 anyhow = "1.0"
 arc-swap = "1.7"
 tracing = "0.1.40"

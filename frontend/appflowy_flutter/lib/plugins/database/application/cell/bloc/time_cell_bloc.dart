@@ -91,7 +91,7 @@ class TimeCellBloc extends Bloc<TimeCellEvent, TimeCellState> {
 }
 
 @freezed
-class TimeCellEvent with _$TimeCellEvent {
+abstract class TimeCellEvent with _$TimeCellEvent {
   const factory TimeCellEvent.didReceiveCellUpdate(TimeCellDataPB? cell) =
       _DidReceiveCellUpdate;
   const factory TimeCellEvent.didUpdateField(FieldInfo fieldInfo) =
@@ -100,7 +100,7 @@ class TimeCellEvent with _$TimeCellEvent {
 }
 
 @freezed
-class TimeCellState with _$TimeCellState {
+abstract class TimeCellState with _$TimeCellState {
   const factory TimeCellState({
     required String content,
     required bool wrap,

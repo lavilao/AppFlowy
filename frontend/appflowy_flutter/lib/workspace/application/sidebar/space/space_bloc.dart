@@ -733,7 +733,7 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
 }
 
 @freezed
-class SpaceEvent with _$SpaceEvent {
+abstract class SpaceEvent with _$SpaceEvent {
   const factory SpaceEvent.initial({
     required bool openFirstPage,
   }) = _Initial;
@@ -787,7 +787,7 @@ class SpaceEvent with _$SpaceEvent {
 }
 
 @freezed
-class SpaceState with _$SpaceState {
+abstract class SpaceState with _$SpaceState {
   const factory SpaceState({
     // use root view with space attributes to represent the space
     @Default([]) List<ViewPB> spaces,

@@ -70,7 +70,7 @@ class SummaryRowBloc extends Bloc<SummaryRowEvent, SummaryRowState> {
 }
 
 @freezed
-class SummaryRowEvent with _$SummaryRowEvent {
+abstract class SummaryRowEvent with _$SummaryRowEvent {
   const factory SummaryRowEvent.startSummary() = _DidStartSummary;
   const factory SummaryRowEvent.finishSummary(
     FlowyResult<void, FlowyError> result,
@@ -78,7 +78,7 @@ class SummaryRowEvent with _$SummaryRowEvent {
 }
 
 @freezed
-class SummaryRowState with _$SummaryRowState {
+abstract class SummaryRowState with _$SummaryRowState {
   const factory SummaryRowState({
     required LoadingState loadingState,
     required FlowyError? error,
@@ -93,7 +93,7 @@ class SummaryRowState with _$SummaryRowState {
 }
 
 @freezed
-class LoadingState with _$LoadingState {
+abstract class LoadingState with _$LoadingState {
   const factory LoadingState.loading() = _Loading;
   const factory LoadingState.finish() = _Finish;
 }

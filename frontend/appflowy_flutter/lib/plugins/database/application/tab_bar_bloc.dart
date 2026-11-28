@@ -216,7 +216,7 @@ class DatabaseTabBarBloc
 }
 
 @freezed
-class DatabaseTabBarEvent with _$DatabaseTabBarEvent {
+abstract class DatabaseTabBarEvent with _$DatabaseTabBarEvent {
   const factory DatabaseTabBarEvent.initial() = _Initial;
 
   const factory DatabaseTabBarEvent.didLoadChildViews(
@@ -243,7 +243,7 @@ class DatabaseTabBarEvent with _$DatabaseTabBarEvent {
 }
 
 @freezed
-class DatabaseTabBarState with _$DatabaseTabBarState {
+abstract class DatabaseTabBarState with _$DatabaseTabBarState {
   const factory DatabaseTabBarState({
     required ViewPB parentView,
     required int selectedIndex,

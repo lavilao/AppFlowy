@@ -334,7 +334,7 @@ class CommandPaletteBloc
 }
 
 @freezed
-class CommandPaletteEvent with _$CommandPaletteEvent {
+abstract class CommandPaletteEvent with _$CommandPaletteEvent {
   const factory CommandPaletteEvent.searchChanged({required String search}) =
       _SearchChanged;
   const factory CommandPaletteEvent.performSearch({required String search}) =
@@ -385,7 +385,7 @@ class SearchResultItem {
 }
 
 @freezed
-class CommandPaletteState with _$CommandPaletteState {
+abstract class CommandPaletteState with _$CommandPaletteState {
   const CommandPaletteState._();
   const factory CommandPaletteState({
     @Default(null) String? query,

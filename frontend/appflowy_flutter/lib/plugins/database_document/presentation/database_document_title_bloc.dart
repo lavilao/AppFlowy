@@ -142,7 +142,7 @@ class DatabaseDocumentTitleBloc
 }
 
 @freezed
-class DatabaseDocumentTitleEvent with _$DatabaseDocumentTitleEvent {
+abstract class DatabaseDocumentTitleEvent with _$DatabaseDocumentTitleEvent {
   const factory DatabaseDocumentTitleEvent.didUpdateAncestors(
     List<ViewPB> ancestors,
   ) = _DidUpdateAncestors;
@@ -163,7 +163,7 @@ class DatabaseDocumentTitleEvent with _$DatabaseDocumentTitleEvent {
 }
 
 @freezed
-class DatabaseDocumentTitleState with _$DatabaseDocumentTitleState {
+abstract class DatabaseDocumentTitleState with _$DatabaseDocumentTitleState {
   const factory DatabaseDocumentTitleState({
     required List<ViewPB> ancestors,
     required DatabaseController? databaseController,

@@ -115,7 +115,7 @@ class RelatedRowDetailPageBloc
 }
 
 @freezed
-class RelatedRowDetailPageEvent with _$RelatedRowDetailPageEvent {
+abstract class RelatedRowDetailPageEvent with _$RelatedRowDetailPageEvent {
   const factory RelatedRowDetailPageEvent.didInitialize(
     DatabaseController databaseController,
     RowController rowController,
@@ -123,7 +123,7 @@ class RelatedRowDetailPageEvent with _$RelatedRowDetailPageEvent {
 }
 
 @freezed
-class RelatedRowDetailPageState with _$RelatedRowDetailPageState {
+abstract class RelatedRowDetailPageState with _$RelatedRowDetailPageState {
   const factory RelatedRowDetailPageState.loading() = _LoadingState;
   const factory RelatedRowDetailPageState.ready({
     required DatabaseController databaseController,

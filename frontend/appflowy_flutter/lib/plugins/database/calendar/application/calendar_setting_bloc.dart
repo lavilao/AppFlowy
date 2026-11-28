@@ -115,7 +115,7 @@ class CalendarSettingBloc
 }
 
 @freezed
-class CalendarSettingState with _$CalendarSettingState {
+abstract class CalendarSettingState with _$CalendarSettingState {
   const factory CalendarSettingState({
     required CalendarLayoutSettingPB? layoutSetting,
   }) = _CalendarSettingState;
@@ -128,7 +128,7 @@ class CalendarSettingState with _$CalendarSettingState {
 }
 
 @freezed
-class CalendarSettingEvent with _$CalendarSettingEvent {
+abstract class CalendarSettingEvent with _$CalendarSettingEvent {
   const factory CalendarSettingEvent.initial() = _Initial;
   const factory CalendarSettingEvent.didUpdateLayoutSetting(
     CalendarLayoutSettingPB setting,

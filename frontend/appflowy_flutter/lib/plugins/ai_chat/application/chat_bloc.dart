@@ -542,7 +542,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 }
 
 @freezed
-class ChatEvent with _$ChatEvent {
+abstract class ChatEvent with _$ChatEvent {
   // chat settings
   const factory ChatEvent.didReceiveChatSettings({
     required ChatSettingsPB settings,
@@ -596,7 +596,7 @@ class ChatEvent with _$ChatEvent {
 }
 
 @freezed
-class ChatState with _$ChatState {
+abstract class ChatState with _$ChatState {
   const factory ChatState({
     required LoadChatMessageStatus loadingState,
     required PromptResponseState promptResponseState,

@@ -50,7 +50,7 @@ class SimpleTextFilterBloc<T>
 }
 
 @freezed
-class SimpleTextFilterEvent<T> with _$SimpleTextFilterEvent<T> {
+abstract class SimpleTextFilterEvent<T> with _$SimpleTextFilterEvent<T> {
   const factory SimpleTextFilterEvent.updateFilter(String filter) =
       _UpdateFilter;
   const factory SimpleTextFilterEvent.receiveNewValues(List<T> newValues) =
@@ -58,7 +58,7 @@ class SimpleTextFilterEvent<T> with _$SimpleTextFilterEvent<T> {
 }
 
 @freezed
-class SimpleTextFilterState<T> with _$SimpleTextFilterState<T> {
+abstract class SimpleTextFilterState<T> with _$SimpleTextFilterState<T> {
   const factory SimpleTextFilterState({
     required List<T> values,
   }) = _SimpleTextFilterState<T>;

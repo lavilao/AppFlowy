@@ -93,7 +93,7 @@ class ViewInfoBloc extends Bloc<ViewInfoEvent, ViewInfoState> {
 }
 
 @freezed
-class ViewInfoEvent with _$ViewInfoEvent {
+abstract class ViewInfoEvent with _$ViewInfoEvent {
   const factory ViewInfoEvent.started() = _Started;
 
   const factory ViewInfoEvent.unregisterEditorState() = _UnregisterEditorState;
@@ -112,7 +112,7 @@ class ViewInfoEvent with _$ViewInfoEvent {
 }
 
 @freezed
-class ViewInfoState with _$ViewInfoState {
+abstract class ViewInfoState with _$ViewInfoState {
   const factory ViewInfoState({
     required Counters? documentCounters,
     required Counters? titleCounters,

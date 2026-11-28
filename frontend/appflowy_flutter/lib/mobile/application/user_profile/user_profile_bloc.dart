@@ -48,12 +48,12 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 }
 
 @freezed
-class UserProfileEvent with _$UserProfileEvent {
+abstract class UserProfileEvent with _$UserProfileEvent {
   const factory UserProfileEvent.started() = _Started;
 }
 
 @freezed
-class UserProfileState with _$UserProfileState {
+abstract class UserProfileState with _$UserProfileState {
   const factory UserProfileState.initial() = _Initial;
   const factory UserProfileState.loading() = _Loading;
   const factory UserProfileState.workspaceFailure() = _WorkspaceFailure;

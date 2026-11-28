@@ -45,7 +45,7 @@ class FieldCellBloc extends Bloc<FieldCellEvent, FieldCellState> {
 }
 
 @freezed
-class FieldCellEvent with _$FieldCellEvent {
+abstract class FieldCellEvent with _$FieldCellEvent {
   const factory FieldCellEvent.onFieldChanged(FieldInfo newFieldInfo) =
       _OnFieldChanged;
   const factory FieldCellEvent.onResizeStart() = _OnResizeStart;
@@ -55,7 +55,7 @@ class FieldCellEvent with _$FieldCellEvent {
 }
 
 @freezed
-class FieldCellState with _$FieldCellState {
+abstract class FieldCellState with _$FieldCellState {
   factory FieldCellState.initial(FieldInfo fieldInfo) => FieldCellState(
         fieldInfo: fieldInfo,
         isResizing: false,

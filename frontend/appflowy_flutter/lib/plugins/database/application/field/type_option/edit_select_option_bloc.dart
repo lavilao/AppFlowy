@@ -42,7 +42,7 @@ class EditSelectOptionBloc
 }
 
 @freezed
-class EditSelectOptionEvent with _$EditSelectOptionEvent {
+abstract class EditSelectOptionEvent with _$EditSelectOptionEvent {
   const factory EditSelectOptionEvent.updateName(String name) = _UpdateName;
   const factory EditSelectOptionEvent.updateColor(SelectOptionColorPB color) =
       _UpdateColor;
@@ -50,7 +50,7 @@ class EditSelectOptionEvent with _$EditSelectOptionEvent {
 }
 
 @freezed
-class EditSelectOptionState with _$EditSelectOptionState {
+abstract class EditSelectOptionState with _$EditSelectOptionState {
   const factory EditSelectOptionState({
     required SelectOptionPB option,
     required bool deleted,

@@ -1,18 +1,8 @@
 group 'com.example.flowy_infra_ui'
 version '1.0'
 
-buildscript {
-    ext.kotlin_version  = '1.8.0'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
-    }
-}
-
+// No local buildscript: AGP comes from android/settings.gradle, so this module
+// is built with the same AGP as the app (it used to pin AGP 7.4.2 locally).
 rootProject.allprojects {
     repositories {
         google()
@@ -23,12 +13,12 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 33
+    compileSdk 36
     namespace 'com.example.flowy_infra_ui'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     dependencies {
         implementation "androidx.core:core:1.5.0-rc01"

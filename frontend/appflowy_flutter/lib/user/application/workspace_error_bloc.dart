@@ -53,7 +53,7 @@ class WorkspaceErrorBloc
 }
 
 @freezed
-class WorkspaceErrorEvent with _$WorkspaceErrorEvent {
+abstract class WorkspaceErrorEvent with _$WorkspaceErrorEvent {
   const factory WorkspaceErrorEvent.init() = _Init;
   const factory WorkspaceErrorEvent.logout() = _DidLogout;
   const factory WorkspaceErrorEvent.didResetWorkspace(
@@ -62,7 +62,7 @@ class WorkspaceErrorEvent with _$WorkspaceErrorEvent {
 }
 
 @freezed
-class WorkspaceErrorState with _$WorkspaceErrorState {
+abstract class WorkspaceErrorState with _$WorkspaceErrorState {
   const factory WorkspaceErrorState({
     required FlowyError initialError,
     LoadingState? loadingState,
@@ -76,7 +76,7 @@ class WorkspaceErrorState with _$WorkspaceErrorState {
 }
 
 @freezed
-class WorkspaceState with _$WorkspaceState {
+abstract class WorkspaceState with _$WorkspaceState {
   const factory WorkspaceState.initial() = _Initial;
   const factory WorkspaceState.logout() = _Logout;
   const factory WorkspaceState.reset() = _Reset;

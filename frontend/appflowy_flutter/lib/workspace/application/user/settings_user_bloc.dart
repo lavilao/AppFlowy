@@ -112,7 +112,7 @@ class SettingsUserViewBloc extends Bloc<SettingsUserEvent, SettingsUserState> {
 }
 
 @freezed
-class SettingsUserEvent with _$SettingsUserEvent {
+abstract class SettingsUserEvent with _$SettingsUserEvent {
   const factory SettingsUserEvent.initial() = _Initial;
   const factory SettingsUserEvent.updateUserName({
     required String name,
@@ -134,7 +134,7 @@ class SettingsUserEvent with _$SettingsUserEvent {
 }
 
 @freezed
-class SettingsUserState with _$SettingsUserState {
+abstract class SettingsUserState with _$SettingsUserState {
   const factory SettingsUserState({
     required UserProfilePB userProfile,
     required FlowyResult<void, String> successOrFailure,

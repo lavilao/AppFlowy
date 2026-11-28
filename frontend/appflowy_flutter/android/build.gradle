@@ -1,15 +1,7 @@
-buildscript {
-    ext.kotlin_version = '1.8.0'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
+// Plugin and dependency versions (AGP 9.1.1, Kotlin 2.4.21, the Flutter
+// Gradle plugin) are declared in settings.gradle's pluginManagement/plugins
+// blocks: Flutter 3.50 no longer supports applying its Gradle plugin with
+// `apply from:`, so the buildscript classpath this file used to carry is gone.
 
 allprojects {
     repositories {
@@ -18,12 +10,20 @@ allprojects {
     }
 }
 
-rootProject.buildDir = '../build'
+// Gradle 9 removed Project.buildDir; layout.buildDirectory is the replacement.
+// Keep the historical layout: <flutter project>/build/<module>.
+def appflowyBuildDir = rootProject.layout.buildDirectory.dir('../build').get()
+rootProject.layout.buildDirectory.set(appflowyBuildDir)
 subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.layout.buildDirectory.set(appflowyBuildDir.dir(project.name))
     project.evaluationDependsOn(':app')
 }
 
+// The compileSdk of every Android module is raised in settings.gradle (see the
+// gradle.beforeProject hook there): it has to be registered before the project
+// is evaluated, and by the time this file runs the subprojects pulled in below
+// are already evaluated.
+
 tasks.register("clean", Delete) {
-    delete rootProject.buildDir
+    delete rootProject.layout.buildDirectory
 }

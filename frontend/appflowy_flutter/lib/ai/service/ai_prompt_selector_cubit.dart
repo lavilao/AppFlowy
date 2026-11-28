@@ -385,7 +385,7 @@ class AiPromptSelectorCubit extends Cubit<AiPromptSelectorState> {
 }
 
 @freezed
-class AiPromptSelectorState with _$AiPromptSelectorState {
+abstract class AiPromptSelectorState with _$AiPromptSelectorState {
   const AiPromptSelectorState._();
 
   const factory AiPromptSelectorState.loading() = _AiPromptSelectorLoadingState;

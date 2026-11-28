@@ -43,12 +43,12 @@ class ViewAncestorBloc extends Bloc<ViewAncestorEvent, ViewAncestorState> {
 }
 
 @freezed
-class ViewAncestorEvent with _$ViewAncestorEvent {
+abstract class ViewAncestorEvent with _$ViewAncestorEvent {
   const factory ViewAncestorEvent.initial() = Initial;
 }
 
 @freezed
-class ViewAncestorState with _$ViewAncestorState {
+abstract class ViewAncestorState with _$ViewAncestorState {
   const factory ViewAncestorState({
     required ViewAncestor ancestor,
     required String viewId,

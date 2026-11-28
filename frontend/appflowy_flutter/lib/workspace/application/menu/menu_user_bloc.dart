@@ -77,7 +77,7 @@ class MenuUserBloc extends Bloc<MenuUserEvent, MenuUserState> {
 }
 
 @freezed
-class MenuUserEvent with _$MenuUserEvent {
+abstract class MenuUserEvent with _$MenuUserEvent {
   const factory MenuUserEvent.initial() = _Initial;
   const factory MenuUserEvent.updateUserName(String name) = _UpdateUserName;
   const factory MenuUserEvent.didReceiveUserProfile(
@@ -86,7 +86,7 @@ class MenuUserEvent with _$MenuUserEvent {
 }
 
 @freezed
-class MenuUserState with _$MenuUserState {
+abstract class MenuUserState with _$MenuUserState {
   const factory MenuUserState({
     required UserProfilePB userProfile,
     required List<WorkspacePB>? workspaces,

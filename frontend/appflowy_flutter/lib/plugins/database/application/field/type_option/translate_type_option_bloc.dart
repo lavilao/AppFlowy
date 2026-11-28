@@ -35,14 +35,14 @@ class TranslateTypeOptionBloc
 }
 
 @freezed
-class TranslateTypeOptionEvent with _$TranslateTypeOptionEvent {
+abstract class TranslateTypeOptionEvent with _$TranslateTypeOptionEvent {
   const factory TranslateTypeOptionEvent.selectLanguage(
     TranslateLanguagePB languageType,
   ) = _SelectLanguage;
 }
 
 @freezed
-class TranslateTypeOptionState with _$TranslateTypeOptionState {
+abstract class TranslateTypeOptionState with _$TranslateTypeOptionState {
   const factory TranslateTypeOptionState({
     required TranslateTypeOptionPB option,
     required String language,

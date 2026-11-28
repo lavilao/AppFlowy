@@ -19,7 +19,7 @@ class CloudSettingBloc extends Bloc<CloudSettingEvent, CloudSettingState> {
 }
 
 @freezed
-class CloudSettingEvent with _$CloudSettingEvent {
+abstract class CloudSettingEvent with _$CloudSettingEvent {
   const factory CloudSettingEvent.initial() = _Initial;
   const factory CloudSettingEvent.updateCloudType(
     AuthenticatorType newCloudType,
@@ -27,7 +27,7 @@ class CloudSettingEvent with _$CloudSettingEvent {
 }
 
 @freezed
-class CloudSettingState with _$CloudSettingState {
+abstract class CloudSettingState with _$CloudSettingState {
   const factory CloudSettingState({
     required AuthenticatorType cloudType,
   }) = _CloudSettingState;

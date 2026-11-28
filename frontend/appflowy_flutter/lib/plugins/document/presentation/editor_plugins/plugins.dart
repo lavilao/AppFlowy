@@ -53,6 +53,7 @@ export 'mobile_toolbar_v3/appflowy_mobile_toolbar_item.dart';
 export 'mobile_toolbar_v3/basic_toolbar_item.dart';
 export 'mobile_toolbar_v3/indent_outdent_toolbar_item.dart';
 export 'mobile_toolbar_v3/list_toolbar_item.dart';
+export 'mobile_toolbar_v3/local_intelligence_toolbar_item.dart';
 export 'mobile_toolbar_v3/more_toolbar_item.dart';
 export 'mobile_toolbar_v3/toolbar_item_builder.dart';
 export 'mobile_toolbar_v3/undo_redo_toolbar_item.dart';

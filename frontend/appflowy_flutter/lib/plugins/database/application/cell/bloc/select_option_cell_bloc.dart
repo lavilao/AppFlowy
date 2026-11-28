@@ -77,7 +77,7 @@ class SelectOptionCellBloc
 }
 
 @freezed
-class SelectOptionCellEvent with _$SelectOptionCellEvent {
+abstract class SelectOptionCellEvent with _$SelectOptionCellEvent {
   const factory SelectOptionCellEvent.didReceiveOptions(
     List<SelectOptionPB> selectedOptions,
   ) = _DidReceiveOptions;
@@ -86,7 +86,7 @@ class SelectOptionCellEvent with _$SelectOptionCellEvent {
 }
 
 @freezed
-class SelectOptionCellState with _$SelectOptionCellState {
+abstract class SelectOptionCellState with _$SelectOptionCellState {
   const factory SelectOptionCellState({
     required List<SelectOptionPB> selectedOptions,
     required bool wrap,

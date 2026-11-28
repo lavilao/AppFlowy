@@ -44,18 +44,18 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  FLUTTER_VERSION: "3.27.4"
+  FLUTTER_VERSION: "3.50.1"
   RUST_TOOLCHAIN: "1.85.0"
   CARGO_MAKE_VERSION: "0.37.18"
   CARGO_NDK_VERSION: "3.5.4"
-  # r27d. MUST stay in lockstep with ndkVersion in
+  # r28c. MUST stay in lockstep with ndkVersion in
   # frontend/appflowy_flutter/android/app/build.gradle: libdart_ffi.so is
   # linked against THIS NDK's libc++_shared.so, and gradle's externalNativeBuild
   # (src/main/CMakeLists.txt) packages THIS NDK's libc++_shared.so. A mismatch
-  # (e.g. r24 runtime + r27d-linked Rust lib) fails at dlopen on launch:
+  # (e.g. r24 runtime + r28c-linked Rust lib) fails at dlopen on launch:
   #   cannot locate symbol "_ZTTNSt6__ndk118basic_stringstream..."
-  # r27d == 27.3.13750724 (https://github.com/android/ndk/releases/tag/r27d).
-  NDK_VERSION: "27.3.13750724"
+  # r28c == 28.2.13676358 (https://github.com/android/ndk/releases/tag/r28c).
+  NDK_VERSION: "28.2.13676358"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -115,24 +115,24 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.10
+          gradle-version: 9.3.1
 
       # ──────────────────────────────────────────────────────────────────────
-      # PIN the NDK to r27d so that EVERY piece of native code in the APK uses
+      # PIN the NDK to r28c so that EVERY piece of native code in the APK uses
       # the same libc++ runtime:
-      #   * cargo-ndk links libdart_ffi.so against r27d's libc++_shared.so
+      #   * cargo-ndk links libdart_ffi.so against r28c's libc++_shared.so
       #     (119 undefined __ndk1 symbols, resolved at dlopen time);
-      #   * gradle (ndkVersion 27.3.13750724 in app/build.gradle) builds the
-      #     CMake stub and copies r27d's libc++_shared.so into the APK.
+      #   * gradle (ndkVersion 28.2.13676358 in app/build.gradle) builds the
+      #     CMake stub and copies r28c's libc++_shared.so into the APK.
       # Without this pin, cargo-ndk picks whatever NDK the runner image has
       # (drifts over time) and the APK can end up with a libc++ runtime older
       # than the one libdart_ffi.so was linked against → dlopen fails on
       # launch with "cannot locate symbol _ZTTNSt6__ndk118basic_stringstream..."
       # (the Redmi 9A black-screen crash). ANDROID_NDK_HOME/NDK_HOME pin
       # cargo-ndk; ndkVersion pins gradle — both now point at the exact same
-      # r27d build.
+      # r28c build.
       # ──────────────────────────────────────────────────────────────────────
-      - name: Install pinned Android NDK r27d (27.3.13750724)
+      - name: Install pinned Android NDK r28c (28.2.13676358)
         run: |
           set -euo pipefail
           NDK_VERSION="${{ env.NDK_VERSION }}"
@@ -157,10 +157,10 @@ jobs:
           install_via_direct_download() {
             echo "Installing NDK $NDK_VERSION from the official zip (dl.google.com)..."
             curl -sSL --retry 3 -o /tmp/android-ndk-linux.zip \
-              "https://dl.google.com/android/repository/android-ndk-r27d-linux.zip"
+              "https://dl.google.com/android/repository/android-ndk-r28c-linux.zip"
             rm -rf /tmp/ndk-extract "$NDK_DIR"
             unzip -q /tmp/android-ndk-linux.zip -d /tmp/ndk-extract
-            mv /tmp/ndk-extract/android-ndk-r27d "$NDK_DIR"
+            mv /tmp/ndk-extract/android-ndk-r28c "$NDK_DIR"
             rm -rf /tmp/ndk-extract /tmp/android-ndk-linux.zip
           }
 
@@ -363,15 +363,60 @@ jobs:
           cargo make pub_get
         shell: bash
 
+      # ──────────────────────────────────────────────────────────────────────
+      # The pinned appflowy_editor revision predates Flutter 3.50's
+      # TextInputClient.onFocusReceived, so its DeltaTextInputService does not
+      # compile as-is. Upstream fixed it in a July 2026 commit; until the app
+      # moves to a newer editor, the one missing method is spliced into the
+      # checkout. Idempotent, and it fails the build if the pinned revision
+      # no longer looks the way the patch expects.
+      # ──────────────────────────────────────────────────────────────────────
+      - name: Patch pinned dependencies for Flutter 3.50
+        working-directory: frontend
+        run: |
+          set -euo pipefail
+          bash ./scripts/patch_appflowy_editor.sh
+        shell: bash
+
+      # ──────────────────────────────────────────────────────────────────────
+      # Cactus on-device intelligence.
+      #
+      # The static engine (5 MB, both Android ABIs) is linked into
+      # libflowy_cactus.so by src/main/CMakeLists.txt, and the three .cact
+      # models (74 MB) are packaged as Flutter assets. Neither is committed,
+      # so both are fetched here from the Apache-2.0 Cactus release on Hugging
+      # Face, pinned by revision and verified against a SHA-256. A failure
+      # here fails the build: shipping without the models would silently
+      # remove the features they power.
+      # ──────────────────────────────────────────────────────────────────────
+      - name: Fetch the Cactus engine and models
+        working-directory: frontend
+        run: |
+          set -euo pipefail
+          bash ./scripts/fetch_cactus.sh all
+          echo "==== models to be packaged ===="
+          ls -l appflowy_flutter/assets/cactus
+          echo "==== engine to be linked ===="
+          ls -l appflowy_flutter/android/app/src/main/cactus/*/libcactus.a
+        shell: bash
+
       - name: Build APK for ARMeabiv7
         working-directory: frontend/appflowy_flutter
         run: |
           set -euo pipefail
           echo "Building APK for ARMeabiv7 architecture..."
+          # A single arm APK: --split-per-abi relies on AGP's abi splits, whose
+          # output AGP 9 no longer leaves where Flutter's tool looks for it
+          # ("Gradle build failed to produce an .apk file" although Gradle
+          # succeeded). --target-platform android-arm already limits the APK to
+          # armeabi-v7a, which is the only ABI this fork ships.
           flutter build apk \
             --target-platform android-arm \
-            --release \
-            --split-per-abi
+            --release
+          echo "==== produced APKs ===="
+          find build -name '*.apk' -exec ls -lh {} \;
+          echo "==== native ABIs in the arm APK ===="
+          unzip -l build/app/outputs/flutter-apk/*.apk | grep 'lib/' | head -10
         shell: bash
 
       # ──────────────────────────────────────────────────────────────────────
@@ -386,17 +431,29 @@ jobs:
         run: |
           set -euo pipefail
           export READELF="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf"
+          APK="$(ls app-release.apk app-armeabi-v7a-release.apk 2>/dev/null | head -n 1)"
+          if [ -z "$APK" ]; then
+            echo "ERROR: no APK to check in $(pwd)"
+            ls -la
+            exit 1
+          fi
+          echo "Checking $APK"
           bash "$GITHUB_WORKSPACE/frontend/scripts/check_apk_libcxx_symbols.sh" \
-            app-armeabi-v7a-release.apk armeabi-v7a
+            "$APK" armeabi-v7a
         shell: bash
 
       - name: Locate and package armeabi-v7a APK (+ SHA256)
         run: |
           set -euo pipefail
           mkdir -p release-artifacts
-          APK_PATH="frontend/appflowy_flutter/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk"
+          # The arm build produces app-release.apk; accept the split name too in
+          # case the tool starts emitting per-ABI files again.
+          APK_PATH="frontend/appflowy_flutter/build/app/outputs/flutter-apk/app-release.apk"
           if [ ! -f "$APK_PATH" ]; then
-            APK_PATH="$(find frontend/appflowy_flutter/build/app/outputs/apk -name "*armeabi-v7a*.apk" | head -n 1)"
+            APK_PATH="frontend/appflowy_flutter/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk"
+          fi
+          if [ ! -f "$APK_PATH" ]; then
+            APK_PATH="$(find frontend/appflowy_flutter/build -name "*.apk" | head -n 1)"
           fi
           if [ -z "${APK_PATH:-}" ] || [ ! -f "$APK_PATH" ]; then
             echo "ERROR: armeabi-v7a release APK was not found!"
@@ -465,10 +522,10 @@ jobs:
             **Architecture:** `armeabi-v7a` (32-bit ARM Android)
             **Release Tag:** `${{ steps.release_info.outputs.tag }}`
             **Commit:** `${{ github.sha }}`
-            **Flutter:** ${{ env.FLUTTER_VERSION }} · **Rust:** ${{ env.RUST_TOOLCHAIN }} · **NDK:** r27d (`${{ env.NDK_VERSION }}`)
+            **Flutter:** ${{ env.FLUTTER_VERSION }} · **Rust:** ${{ env.RUST_TOOLCHAIN }} · **NDK:** r28c (`${{ env.NDK_VERSION }}`)
 
             - Built for 32-bit ARM devices (e.g. Redmi 9A / Helio G25, Android 11)
-            - `libdart_ffi.so` and the packaged `libc++_shared.so` come from the SAME NDK r27d runtime — verified by a post-build `__ndk1` symbol check in CI
+            - `libdart_ffi.so` and the packaged `libc++_shared.so` come from the SAME NDK r28c runtime — verified by a post-build `__ndk1` symbol check in CI
             - Stable release signature: updates install over previous releases without losing user data
 
             #### Verification

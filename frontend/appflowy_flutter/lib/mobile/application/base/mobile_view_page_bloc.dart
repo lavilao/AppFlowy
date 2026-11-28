@@ -87,14 +87,14 @@ class MobileViewPageBloc
 }
 
 @freezed
-class MobileViewPageEvent with _$MobileViewPageEvent {
+abstract class MobileViewPageEvent with _$MobileViewPageEvent {
   const factory MobileViewPageEvent.initial() = Initial;
   const factory MobileViewPageEvent.updateImmersionMode(bool isImmersiveMode) =
       UpdateImmersionMode;
 }
 
 @freezed
-class MobileViewPageState with _$MobileViewPageState {
+abstract class MobileViewPageState with _$MobileViewPageState {
   const factory MobileViewPageState({
     @Default(true) bool isLoading,
     @Default(null) FlowyResult<ViewPB, FlowyError>? result,

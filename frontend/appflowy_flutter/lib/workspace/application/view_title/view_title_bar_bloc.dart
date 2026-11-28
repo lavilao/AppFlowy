@@ -74,7 +74,7 @@ class ViewTitleBarBloc extends Bloc<ViewTitleBarEvent, ViewTitleBarState> {
 }
 
 @freezed
-class ViewTitleBarEvent with _$ViewTitleBarEvent {
+abstract class ViewTitleBarEvent with _$ViewTitleBarEvent {
   const factory ViewTitleBarEvent.reload() = Reload;
   const factory ViewTitleBarEvent.trashUpdated({
     required List<TrashPB> trash,
@@ -82,7 +82,7 @@ class ViewTitleBarEvent with _$ViewTitleBarEvent {
 }
 
 @freezed
-class ViewTitleBarState with _$ViewTitleBarState {
+abstract class ViewTitleBarState with _$ViewTitleBarState {
   const factory ViewTitleBarState({
     required List<ViewPB> ancestors,
     @Default(false) bool isDeleted,

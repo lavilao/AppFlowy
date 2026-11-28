@@ -135,7 +135,7 @@ class RecentViewBloc extends Bloc<RecentViewEvent, RecentViewState> {
 }
 
 @freezed
-class RecentViewEvent with _$RecentViewEvent {
+abstract class RecentViewEvent with _$RecentViewEvent {
   const factory RecentViewEvent.initial() = Initial;
 
   const factory RecentViewEvent.updateCover(
@@ -152,7 +152,7 @@ class RecentViewEvent with _$RecentViewEvent {
 }
 
 @freezed
-class RecentViewState with _$RecentViewState {
+abstract class RecentViewState with _$RecentViewState {
   const factory RecentViewState({
     required String name,
     required EmojiIconData icon,

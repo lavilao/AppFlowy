@@ -99,7 +99,7 @@ class LocalAiPluginBloc extends Bloc<LocalAiPluginEvent, LocalAiPluginState> {
 }
 
 @freezed
-class LocalAiPluginEvent with _$LocalAiPluginEvent {
+abstract class LocalAiPluginEvent with _$LocalAiPluginEvent {
   const factory LocalAiPluginEvent.didReceiveAiState(LocalAIPB aiState) =
       _DidReceiveAiState;
   const factory LocalAiPluginEvent.didReceiveLackOfResources(
@@ -110,7 +110,7 @@ class LocalAiPluginEvent with _$LocalAiPluginEvent {
 }
 
 @freezed
-class LocalAiPluginState with _$LocalAiPluginState {
+abstract class LocalAiPluginState with _$LocalAiPluginState {
   const LocalAiPluginState._();
 
   const factory LocalAiPluginState.ready({

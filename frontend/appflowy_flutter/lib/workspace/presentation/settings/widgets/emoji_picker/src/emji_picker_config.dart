@@ -9,7 +9,7 @@ import 'models/emoji_category_models.dart';
 part 'emji_picker_config.freezed.dart';
 
 @freezed
-class EmojiPickerConfig with _$EmojiPickerConfig {
+abstract class EmojiPickerConfig with _$EmojiPickerConfig {
   // private empty constructor is used to make method work in freezed
   // https://pub.dev/packages/freezed#adding-getters-and-methods-to-our-models
   const EmojiPickerConfig._();

@@ -29,12 +29,12 @@ class NumberFormatBloc extends Bloc<NumberFormatEvent, NumberFormatState> {
 }
 
 @freezed
-class NumberFormatEvent with _$NumberFormatEvent {
+abstract class NumberFormatEvent with _$NumberFormatEvent {
   const factory NumberFormatEvent.setFilter(String filter) = _SetFilter;
 }
 
 @freezed
-class NumberFormatState with _$NumberFormatState {
+abstract class NumberFormatState with _$NumberFormatState {
   const factory NumberFormatState({
     required List<NumberFormatPB> formats,
     required String filter,

@@ -73,7 +73,7 @@ class TimestampCellBloc extends Bloc<TimestampCellEvent, TimestampCellState> {
 }
 
 @freezed
-class TimestampCellEvent with _$TimestampCellEvent {
+abstract class TimestampCellEvent with _$TimestampCellEvent {
   const factory TimestampCellEvent.didReceiveCellUpdate(
     TimestampCellDataPB? data,
   ) = _DidReceiveCellUpdate;
@@ -82,7 +82,7 @@ class TimestampCellEvent with _$TimestampCellEvent {
 }
 
 @freezed
-class TimestampCellState with _$TimestampCellState {
+abstract class TimestampCellState with _$TimestampCellState {
   const factory TimestampCellState({
     required TimestampCellDataPB? data,
     required String dateStr,

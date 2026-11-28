@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'field_info.freezed.dart';
 
 @freezed
-class FieldInfo with _$FieldInfo {
+abstract class FieldInfo with _$FieldInfo {
   const FieldInfo._();
 
   factory FieldInfo.initial(FieldPB field) => FieldInfo(

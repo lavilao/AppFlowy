@@ -48,3 +48,53 @@ file(COPY
     ${SYSROOT}/usr/lib/x86_64-linux-android/libc++_shared.so
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/jniLibs/x86_64
 )
+
+# ────────────────────────────────────────────────────────────────────────────
+# Cactus on-device intelligence.
+#
+# The Cactus engine is published as a STATIC C++ library plus a native runner
+# binary; a runner cannot be shipped in an APK, so the engine is linked into
+# libflowy_cactus.so, which Dart loads over FFI. `--whole-archive` is required
+# because Dart looks the engine symbols up by name at runtime, which the
+# linker cannot see.
+#
+# frontend/scripts/fetch_cactus.sh downloads the per-ABI archives (they are
+# not committed). Without them this section is skipped and the Dart side hides
+# the features — the app still builds.
+# ────────────────────────────────────────────────────────────────────────────
+set(CACTUS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cactus/${ANDROID_ABI})
+if(EXISTS ${CACTUS_DIR}/libcactus.a)
+    message(CONFIGURE_LOG "Linking the Cactus engine for ${ANDROID_ABI}")
+
+    add_library(cactus_engine STATIC IMPORTED)
+    set_target_properties(cactus_engine PROPERTIES
+        IMPORTED_LOCATION ${CACTUS_DIR}/libcactus.a)
+
+    add_library(flowy_cactus SHARED cactus/cactus_bridge.c)
+    target_include_directories(flowy_cactus PRIVATE ${CACTUS_DIR})
+
+    # libc++ by path, in the very runtime copied into the APK above: the engine
+    # is C++, and letting the linker pick a different (or a second) C++ runtime
+    # is the NDK-runtime-skew crash this project already hit once. Written out
+    # per ABI because the sysroot triples are not the ABI names.
+    if(ANDROID_ABI STREQUAL "armeabi-v7a")
+        set(ANDROID_CXX_TRIPLE arm-linux-androideabi)
+    elseif(ANDROID_ABI STREQUAL "arm64-v8a")
+        set(ANDROID_CXX_TRIPLE aarch64-linux-android)
+    elseif(ANDROID_ABI STREQUAL "x86_64")
+        set(ANDROID_CXX_TRIPLE x86_64-linux-android)
+    endif()
+
+    target_link_libraries(flowy_cactus
+        "-Wl,--whole-archive"
+        cactus_engine
+        "-Wl,--no-whole-archive"
+        ${SYSROOT}/usr/lib/${ANDROID_CXX_TRIPLE}/libc++_shared.so
+        log)
+
+    # No LIBRARY_OUTPUT_DIRECTORY: AGP packages every externalNativeBuild
+    # output itself. Pointing it at jniLibs too would ship the same .so twice
+    # (jniLibs is a source set of this module).
+else()
+    message(CONFIGURE_LOG "Cactus engine not present for ${ANDROID_ABI}; skipping libflowy_cactus.so")
+endif()

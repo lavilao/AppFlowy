@@ -219,7 +219,7 @@ class MentionPageBloc extends Bloc<MentionPageEvent, MentionPageState> {
 }
 
 @freezed
-class MentionPageEvent with _$MentionPageEvent {
+abstract class MentionPageEvent with _$MentionPageEvent {
   const factory MentionPageEvent.initial() = _Initial;
   const factory MentionPageEvent.didUpdateViewStatus({
     @Default(null) ViewPB? view,
@@ -234,7 +234,7 @@ class MentionPageEvent with _$MentionPageEvent {
 }
 
 @freezed
-class MentionPageState with _$MentionPageState {
+abstract class MentionPageState with _$MentionPageState {
   const factory MentionPageState({
     required bool isLoading,
     required bool isInTrash,

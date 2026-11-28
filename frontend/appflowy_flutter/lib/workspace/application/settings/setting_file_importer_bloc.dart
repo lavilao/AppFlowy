@@ -71,7 +71,7 @@ class SettingFileImportBloc
 }
 
 @freezed
-class SettingFileImportEvent with _$SettingFileImportEvent {
+abstract class SettingFileImportEvent with _$SettingFileImportEvent {
   const factory SettingFileImportEvent.importAppFlowyDataFolder(String path) =
       _ImportAppFlowyDataFolder;
   const factory SettingFileImportEvent.finishImport(
@@ -80,7 +80,7 @@ class SettingFileImportEvent with _$SettingFileImportEvent {
 }
 
 @freezed
-class SettingFileImportState with _$SettingFileImportState {
+abstract class SettingFileImportState with _$SettingFileImportState {
   const factory SettingFileImportState({
     required LoadingState loadingState,
     required FlowyResult<void, FlowyError>? successOrFail,

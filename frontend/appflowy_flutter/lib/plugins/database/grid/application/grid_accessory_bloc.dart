@@ -23,7 +23,7 @@ class DatabaseViewSettingExtensionBloc extends Bloc<
 }
 
 @freezed
-class DatabaseViewSettingExtensionEvent
+abstract class DatabaseViewSettingExtensionEvent
     with _$DatabaseViewSettingExtensionEvent {
   const factory DatabaseViewSettingExtensionEvent.initial() = _Initial;
   const factory DatabaseViewSettingExtensionEvent.toggleMenu() =
@@ -31,7 +31,7 @@ class DatabaseViewSettingExtensionEvent
 }
 
 @freezed
-class DatabaseViewSettingExtensionState
+abstract class DatabaseViewSettingExtensionState
     with _$DatabaseViewSettingExtensionState {
   const factory DatabaseViewSettingExtensionState({
     required String viewId,

@@ -44,13 +44,13 @@ class SpaceSearchBloc extends Bloc<SpaceSearchEvent, SpaceSearchState> {
 }
 
 @freezed
-class SpaceSearchEvent with _$SpaceSearchEvent {
+abstract class SpaceSearchEvent with _$SpaceSearchEvent {
   const factory SpaceSearchEvent.initial() = _Initial;
   const factory SpaceSearchEvent.search(String query) = _Search;
 }
 
 @freezed
-class SpaceSearchState with _$SpaceSearchState {
+abstract class SpaceSearchState with _$SpaceSearchState {
   const factory SpaceSearchState({
     List<ViewPB>? queryResults,
   }) = _SpaceSearchState;

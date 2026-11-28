@@ -94,7 +94,7 @@ class TrashBloc extends Bloc<TrashEvent, TrashState> {
 }
 
 @freezed
-class TrashEvent with _$TrashEvent {
+abstract class TrashEvent with _$TrashEvent {
   const factory TrashEvent.initial() = Initial;
   const factory TrashEvent.didReceiveTrash(List<TrashPB> trash) = ReceiveTrash;
   const factory TrashEvent.putback(String trashId) = Putback;
@@ -104,7 +104,7 @@ class TrashEvent with _$TrashEvent {
 }
 
 @freezed
-class TrashState with _$TrashState {
+abstract class TrashState with _$TrashState {
   const factory TrashState({
     required List<TrashPB> objects,
     required FlowyResult<void, FlowyError> successOrFailure,

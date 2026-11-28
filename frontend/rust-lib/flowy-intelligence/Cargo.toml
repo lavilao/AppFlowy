@@ -1,0 +1,23 @@
+[package]
+name = "flowy-intelligence"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+lib-dispatch = { path = "../lib-dispatch" }
+flowy-error = { path = "../flowy-error" }
+flowy-derive.workspace = true
+flowy-intelligence-core = { path = "../flowy-intelligence-core" }
+protobuf.workspace = true
+bytes.workspace = true
+strum_macros = "0.21"
+tracing.workspace = true
+
+[build-dependencies]
+flowy-codegen.workspace = true
+
+[features]
+dart = ["flowy-codegen/dart"]

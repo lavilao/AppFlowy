@@ -58,7 +58,7 @@ class PageStyleIconBloc extends Bloc<PageStyleIconEvent, PageStyleIconState> {
 }
 
 @freezed
-class PageStyleIconEvent with _$PageStyleIconEvent {
+abstract class PageStyleIconEvent with _$PageStyleIconEvent {
   const factory PageStyleIconEvent.initial() = Initial;
 
   const factory PageStyleIconEvent.updateIcon(
@@ -68,7 +68,7 @@ class PageStyleIconEvent with _$PageStyleIconEvent {
 }
 
 @freezed
-class PageStyleIconState with _$PageStyleIconState {
+abstract class PageStyleIconState with _$PageStyleIconState {
   const factory PageStyleIconState({
     @Default(null) EmojiIconData? icon,
   }) = _PageStyleIconState;

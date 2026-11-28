@@ -451,26 +451,26 @@ class DocumentBloc extends Bloc<DocumentEvent, DocumentState> {
 }
 
 @freezed
-class DocumentEvent with _$DocumentEvent {
+abstract class DocumentEvent with _$DocumentEvent {
   const factory DocumentEvent.initial() = Initial;
   const factory DocumentEvent.moveToTrash() = MoveToTrash;
   const factory DocumentEvent.restore() = Restore;
   const factory DocumentEvent.restorePage() = RestorePage;
   const factory DocumentEvent.deletePermanently() = DeletePermanently;
   const factory DocumentEvent.syncStateChanged(
-    final DocumentSyncStatePB syncState,
-  ) = syncStateChanged;
+    DocumentSyncStatePB syncState,
+  ) = SyncStateChanged;
   const factory DocumentEvent.syncAwarenessStates() = SyncAwarenessStates;
   const factory DocumentEvent.clearAwarenessStates() = ClearAwarenessStates;
 }
 
 @freezed
-class DocumentState with _$DocumentState {
+abstract class DocumentState with _$DocumentState {
   const factory DocumentState({
-    required final bool isDeleted,
-    required final bool forceClose,
-    required final bool isLoading,
-    required final DocumentSyncState syncState,
+    required bool isDeleted,
+    required bool forceClose,
+    required bool isLoading,
+    required DocumentSyncState syncState,
     bool? isDocumentEmpty,
     UserProfilePB? userProfilePB,
     EditorState? editorState,

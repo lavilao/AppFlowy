@@ -100,13 +100,13 @@ class FavoriteMenuBloc extends Bloc<FavoriteMenuEvent, FavoriteMenuState> {
 }
 
 @freezed
-class FavoriteMenuEvent with _$FavoriteMenuEvent {
+abstract class FavoriteMenuEvent with _$FavoriteMenuEvent {
   const factory FavoriteMenuEvent.initial() = Initial;
   const factory FavoriteMenuEvent.search(String query) = Search;
 }
 
 @freezed
-class FavoriteMenuState with _$FavoriteMenuState {
+abstract class FavoriteMenuState with _$FavoriteMenuState {
   const factory FavoriteMenuState({
     @Default([]) List<ViewPB> views,
     @Default([]) List<ViewPB> queriedViews,

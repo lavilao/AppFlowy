@@ -215,7 +215,7 @@ class SidebarPlanBloc extends Bloc<SidebarPlanEvent, SidebarPlanState> {
 }
 
 @freezed
-class SidebarPlanEvent with _$SidebarPlanEvent {
+abstract class SidebarPlanEvent with _$SidebarPlanEvent {
   const factory SidebarPlanEvent.init(
     String workspaceId,
     UserProfilePB userProfile,
@@ -234,7 +234,7 @@ class SidebarPlanEvent with _$SidebarPlanEvent {
 }
 
 @freezed
-class SidebarPlanState with _$SidebarPlanState {
+abstract class SidebarPlanState with _$SidebarPlanState {
   const factory SidebarPlanState({
     FlowyError? error,
     UserProfilePB? userProfile,
@@ -246,7 +246,7 @@ class SidebarPlanState with _$SidebarPlanState {
 }
 
 @freezed
-class SidebarToastTierIndicator with _$SidebarToastTierIndicator {
+abstract class SidebarToastTierIndicator with _$SidebarToastTierIndicator {
   const factory SidebarToastTierIndicator.storageLimitHit() = _StorageLimitHit;
   const factory SidebarToastTierIndicator.singleFileLimitHit() =
       _SingleFileLimitHit;

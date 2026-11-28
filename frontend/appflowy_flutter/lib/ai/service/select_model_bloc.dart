@@ -64,7 +64,7 @@ class SelectModelBloc extends Bloc<SelectModelEvent, SelectModelState> {
 }
 
 @freezed
-class SelectModelEvent with _$SelectModelEvent {
+abstract class SelectModelEvent with _$SelectModelEvent {
   const factory SelectModelEvent.selectModel(
     AIModelPB model,
   ) = _SelectModel;
@@ -76,7 +76,7 @@ class SelectModelEvent with _$SelectModelEvent {
 }
 
 @freezed
-class SelectModelState with _$SelectModelState {
+abstract class SelectModelState with _$SelectModelState {
   const factory SelectModelState({
     required List<AIModelPB> models,
     required AIModelPB? selectedModel,

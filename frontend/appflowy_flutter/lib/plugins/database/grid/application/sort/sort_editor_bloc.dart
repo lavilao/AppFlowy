@@ -138,7 +138,7 @@ class SortEditorBloc extends Bloc<SortEditorEvent, SortEditorState> {
 }
 
 @freezed
-class SortEditorEvent with _$SortEditorEvent {
+abstract class SortEditorEvent with _$SortEditorEvent {
   const factory SortEditorEvent.didReceiveFields(List<FieldInfo> fieldInfos) =
       _DidReceiveFields;
   const factory SortEditorEvent.didReceiveSorts(List<DatabaseSort> sorts) =
@@ -159,7 +159,7 @@ class SortEditorEvent with _$SortEditorEvent {
 }
 
 @freezed
-class SortEditorState with _$SortEditorState {
+abstract class SortEditorState with _$SortEditorState {
   const factory SortEditorState({
     required List<DatabaseSort> sorts,
     required List<FieldInfo> allFields,

@@ -5,7 +5,7 @@ import '../service/models/flowy_dynamic_plugin.dart';
 part 'dynamic_plugin_state.freezed.dart';
 
 @freezed
-class DynamicPluginState with _$DynamicPluginState {
+abstract class DynamicPluginState with _$DynamicPluginState {
   const factory DynamicPluginState.uninitialized() = _Uninitialized;
   const factory DynamicPluginState.ready({
     required Iterable<FlowyDynamicPlugin> plugins,

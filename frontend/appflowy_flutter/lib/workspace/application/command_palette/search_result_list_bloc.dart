@@ -54,7 +54,7 @@ class SearchResultListBloc
 }
 
 @freezed
-class SearchResultListEvent with _$SearchResultListEvent {
+abstract class SearchResultListEvent with _$SearchResultListEvent {
   const factory SearchResultListEvent.onHoverSummary({
     required SearchSummaryPB summary,
     required bool userHovered,
@@ -70,7 +70,7 @@ class SearchResultListEvent with _$SearchResultListEvent {
 }
 
 @freezed
-class SearchResultListState with _$SearchResultListState {
+abstract class SearchResultListState with _$SearchResultListState {
   const SearchResultListState._();
   const factory SearchResultListState({
     @Default(null) SearchSummaryPB? hoveredSummary,

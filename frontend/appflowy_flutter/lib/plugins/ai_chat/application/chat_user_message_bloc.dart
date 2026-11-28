@@ -94,7 +94,7 @@ class ChatUserMessageBloc
 }
 
 @freezed
-class ChatUserMessageEvent with _$ChatUserMessageEvent {
+abstract class ChatUserMessageEvent with _$ChatUserMessageEvent {
   const factory ChatUserMessageEvent.updateText(String text) = _UpdateText;
   const factory ChatUserMessageEvent.updateQuestionState(
     QuestionMessageState newState,
@@ -105,7 +105,7 @@ class ChatUserMessageEvent with _$ChatUserMessageEvent {
 }
 
 @freezed
-class ChatUserMessageState with _$ChatUserMessageState {
+abstract class ChatUserMessageState with _$ChatUserMessageState {
   const factory ChatUserMessageState({
     required String text,
     required String? messageId,
@@ -120,7 +120,7 @@ class ChatUserMessageState with _$ChatUserMessageState {
 }
 
 @freezed
-class QuestionMessageState with _$QuestionMessageState {
+abstract class QuestionMessageState with _$QuestionMessageState {
   const factory QuestionMessageState.indexFileStart(String fileName) =
       _IndexFileStart;
   const factory QuestionMessageState.indexFileEnd(String fileName) =

@@ -151,7 +151,7 @@ class CalculationsBloc extends Bloc<CalculationsEvent, CalculationsState> {
 }
 
 @freezed
-class CalculationsEvent with _$CalculationsEvent {
+abstract class CalculationsEvent with _$CalculationsEvent {
   const factory CalculationsEvent.started() = _Started;
 
   const factory CalculationsEvent.didReceiveFieldUpdate(
@@ -175,7 +175,7 @@ class CalculationsEvent with _$CalculationsEvent {
 }
 
 @freezed
-class CalculationsState with _$CalculationsState {
+abstract class CalculationsState with _$CalculationsState {
   const factory CalculationsState({
     required List<FieldInfo> fields,
     required Map<String, CalculationPB> calculationsByFieldId,

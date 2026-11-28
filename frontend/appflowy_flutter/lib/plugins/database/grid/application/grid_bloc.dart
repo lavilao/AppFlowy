@@ -199,7 +199,7 @@ class GridBloc extends Bloc<GridEvent, GridState> {
 }
 
 @freezed
-class GridEvent with _$GridEvent {
+abstract class GridEvent with _$GridEvent {
   const factory GridEvent.initial() = InitialGrid;
   const factory GridEvent.openRowDetail(RowMetaPB row) = _OpenRowDetail;
   const factory GridEvent.createRow({bool? openRowDetail}) = _CreateRow;
@@ -221,7 +221,7 @@ class GridEvent with _$GridEvent {
 }
 
 @freezed
-class GridState with _$GridState {
+abstract class GridState with _$GridState {
   const factory GridState({
     required String viewId,
     required List<FieldInfo> fields,

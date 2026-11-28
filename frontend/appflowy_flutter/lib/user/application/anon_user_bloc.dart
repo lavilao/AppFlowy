@@ -41,7 +41,7 @@ class AnonUserBloc extends Bloc<AnonUserEvent, AnonUserState> {
 }
 
 @freezed
-class AnonUserEvent with _$AnonUserEvent {
+abstract class AnonUserEvent with _$AnonUserEvent {
   const factory AnonUserEvent.initial() = _Initial;
   const factory AnonUserEvent.didLoadAnonUsers(
     List<UserProfilePB> historicalUsers,
@@ -51,7 +51,7 @@ class AnonUserEvent with _$AnonUserEvent {
 }
 
 @freezed
-class AnonUserState with _$AnonUserState {
+abstract class AnonUserState with _$AnonUserState {
   const factory AnonUserState({
     required List<UserProfilePB> anonUsers,
     required UserProfilePB? openedAnonUser,
