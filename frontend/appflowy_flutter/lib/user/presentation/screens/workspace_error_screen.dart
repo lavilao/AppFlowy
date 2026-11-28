@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../application/workspace_error_bloc.dart';
+import 'package:appflowy/plugins/database/application/defines.dart';
 
 class WorkspaceErrorScreen extends StatelessWidget {
   const WorkspaceErrorScreen({

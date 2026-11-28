@@ -92,7 +92,7 @@ abstract class DatabaseSyncEvent with _$DatabaseSyncEvent {
   const factory DatabaseSyncEvent.initial() = Initial;
   const factory DatabaseSyncEvent.syncStateChanged(
     DatabaseSyncStatePB syncState,
-  ) = syncStateChanged;
+  ) = SyncStateChanged;
   const factory DatabaseSyncEvent.networkStateChanged(
     ConnectivityResult result,
   ) = NetworkStateChanged;

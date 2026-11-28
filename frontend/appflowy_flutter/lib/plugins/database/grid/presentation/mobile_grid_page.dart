@@ -27,6 +27,8 @@ import 'layout/sizes.dart';
 import 'widgets/header/mobile_grid_header.dart';
 import 'widgets/mobile_fab.dart';
 import 'widgets/row/mobile_row.dart';
+import 'package:appflowy/plugins/database/application/defines.dart';
+import 'package:appflowy/plugins/database/application/row/row_cache.dart';
 
 class MobileGridTabBarBuilderImpl extends DatabaseTabBarItemBuilder {
   @override

@@ -459,7 +459,7 @@ abstract class DocumentEvent with _$DocumentEvent {
   const factory DocumentEvent.deletePermanently() = DeletePermanently;
   const factory DocumentEvent.syncStateChanged(
     DocumentSyncStatePB syncState,
-  ) = syncStateChanged;
+  ) = SyncStateChanged;
   const factory DocumentEvent.syncAwarenessStates() = SyncAwarenessStates;
   const factory DocumentEvent.clearAwarenessStates() = ClearAwarenessStates;
 }

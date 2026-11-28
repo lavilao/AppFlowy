@@ -84,7 +84,7 @@ abstract class DocumentSyncEvent with _$DocumentSyncEvent {
   const factory DocumentSyncEvent.initial() = Initial;
   const factory DocumentSyncEvent.syncStateChanged(
     DocumentSyncStatePB syncState,
-  ) = syncStateChanged;
+  ) = SyncStateChanged;
   const factory DocumentSyncEvent.networkStateChanged(
     ConnectivityResult result,
   ) = NetworkStateChanged;
