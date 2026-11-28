@@ -405,10 +405,18 @@ jobs:
         run: |
           set -euo pipefail
           echo "Building APK for ARMeabiv7 architecture..."
+          # A single arm APK: --split-per-abi relies on AGP's abi splits, whose
+          # output AGP 9 no longer leaves where Flutter's tool looks for it
+          # ("Gradle build failed to produce an .apk file" although Gradle
+          # succeeded). --target-platform android-arm already limits the APK to
+          # armeabi-v7a, which is the only ABI this fork ships.
           flutter build apk \
             --target-platform android-arm \
-            --release \
-            --split-per-abi
+            --release
+          echo "==== produced APKs ===="
+          find build -name '*.apk' -exec ls -lh {} \;
+          echo "==== native ABIs in the arm APK ===="
+          unzip -l build/app/outputs/flutter-apk/*.apk | grep 'lib/' | head -10
         shell: bash
 
       # ──────────────────────────────────────────────────────────────────────
@@ -423,17 +431,29 @@ jobs:
         run: |
           set -euo pipefail
           export READELF="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf"
+          APK="$(ls app-release.apk app-armeabi-v7a-release.apk 2>/dev/null | head -n 1)"
+          if [ -z "$APK" ]; then
+            echo "ERROR: no APK to check in $(pwd)"
+            ls -la
+            exit 1
+          fi
+          echo "Checking $APK"
           bash "$GITHUB_WORKSPACE/frontend/scripts/check_apk_libcxx_symbols.sh" \
-            app-armeabi-v7a-release.apk armeabi-v7a
+            "$APK" armeabi-v7a
         shell: bash
 
       - name: Locate and package armeabi-v7a APK (+ SHA256)
         run: |
           set -euo pipefail
           mkdir -p release-artifacts
-          APK_PATH="frontend/appflowy_flutter/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk"
+          # The arm build produces app-release.apk; accept the split name too in
+          # case the tool starts emitting per-ABI files again.
+          APK_PATH="frontend/appflowy_flutter/build/app/outputs/flutter-apk/app-release.apk"
           if [ ! -f "$APK_PATH" ]; then
-            APK_PATH="$(find frontend/appflowy_flutter/build/app/outputs/apk -name "*armeabi-v7a*.apk" | head -n 1)"
+            APK_PATH="frontend/appflowy_flutter/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk"
+          fi
+          if [ ! -f "$APK_PATH" ]; then
+            APK_PATH="$(find frontend/appflowy_flutter/build -name "*.apk" | head -n 1)"
           fi
           if [ -z "${APK_PATH:-}" ] || [ ! -f "$APK_PATH" ]; then
             echo "ERROR: armeabi-v7a release APK was not found!"

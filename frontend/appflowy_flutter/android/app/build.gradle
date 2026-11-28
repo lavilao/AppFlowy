@@ -122,13 +122,13 @@ android {
 
     defaultConfig {
         ndk {
-            // Upstream pinned "arm64-v8a" here, but ndk.abiFilters CONFLICTS
-            // with splits.abi once --split-per-abi is used ("Conflicting
-            // configuration: 'arm64-v8a' in ndk abiFilters cannot be present
-            // when splits abi filters are set: armeabi-v7a"). The armeabi-v7a
-            // fork drives ABI selection through splits instead — do not
-            // re-enable without dropping --split-per-abi.
-            // abiFilters "arm64-v8a"
+            // This fork ships a single, 32-bit APK. AGP 9 no longer leaves the
+            // --split-per-abi output where Flutter's tool looks for it, so the
+            // build is a plain arm build (--target-platform android-arm) and
+            // the ABI is pinned here: otherwise the libc++ copies that
+            // src/main/CMakeLists.txt drops into jniLibs for the other ABIs
+            // would be packaged as well.
+            abiFilters "armeabi-v7a"
         }
     }
 }
