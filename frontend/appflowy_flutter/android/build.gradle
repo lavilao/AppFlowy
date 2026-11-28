@@ -19,6 +19,21 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
+// Flutter plugins still declare an old compileSdk (connectivity_plus compiles
+// against android-33) while the androidx libraries they pull in already require
+// 34+, and AGP checks that per module (checkReleaseAarMetadata). Raise every
+// Android module to the app's compileSdk instead of patching each plugin; the
+// check reads the value after evaluation, so it has to be set here.
+subprojects { subproject ->
+    subproject.afterEvaluate {
+        def androidExtension = subproject.extensions.findByName('android')
+        if (androidExtension != null &&
+            androidExtension.hasProperty('compileSdkVersion')) {
+            androidExtension.compileSdkVersion = 36
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.layout.buildDirectory
 }
