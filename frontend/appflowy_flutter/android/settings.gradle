@@ -40,13 +40,27 @@ plugins {
 // pulled in with evaluationDependsOn, an outright error ("project is already
 // evaluated").
 gradle.beforeProject { project ->
-    project.afterEvaluate {
+    def raiseCompileSdk = {
         def androidExtension = project.extensions.findByName('android')
         if (androidExtension != null &&
             androidExtension.hasProperty('compileSdkVersion')) {
             androidExtension.compileSdkVersion = 36
         }
     }
+
+    // finalizeDsl is AGP's own "the DSL is final" hook and runs before the
+    // variant (and its AAR metadata task) is created, which is the one that
+    // actually matters here.
+    ['com.android.library', 'com.android.application'].each { pluginId ->
+        project.plugins.withId(pluginId) {
+            project.extensions.getByName('androidComponents').finalizeDsl {
+                raiseCompileSdk()
+            }
+        }
+    }
+
+    // Belt and braces for plugin modules that never register androidComponents.
+    project.afterEvaluate { raiseCompileSdk() }
 }
 
 include ":app"
