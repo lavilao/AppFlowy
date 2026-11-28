@@ -28,4 +28,25 @@ plugins {
     id "org.jetbrains.kotlin.android" version "2.4.21" apply false
 }
 
+// Flutter plugins still declare an old compileSdk (connectivity_plus compiles
+// against android-33) while the androidx libraries they pull in already require
+// 34+, and AGP checks that per module (checkReleaseAarMetadata). Every Android
+// module is raised to the app's compileSdk.
+//
+// This has to be registered here, not in build.gradle: `beforeProject` runs
+// before the project script, so the afterEvaluate hook is added before AGP adds
+// its own, and the value is in place by the time the variant is created. From
+// build.gradle it is both too late in the evaluation order and, for modules
+// pulled in with evaluationDependsOn, an outright error ("project is already
+// evaluated").
+gradle.beforeProject { project ->
+    project.afterEvaluate {
+        def androidExtension = project.extensions.findByName('android')
+        if (androidExtension != null &&
+            androidExtension.hasProperty('compileSdkVersion')) {
+            androidExtension.compileSdkVersion = 36
+        }
+    }
+}
+
 include ":app"
